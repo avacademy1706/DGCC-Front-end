@@ -98,92 +98,104 @@
 //     </header>
 //   );
 // }
-
 "use client";
 
-import { Search, Bell, Sun, Moon, ChevronDown } from "lucide-react";
+import { Search, Bell, Sun, Moon, ChevronDown, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export function TopNavbar() {
-
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted]       = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false); // mobile search toggle
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
-  };
+  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
 
   return (
-    <header className="flex items-center justify-between px-6 h-16 border-b border-gray-200 dark:border-[#1e2d45] bg-white dark:bg-[#0d1220]">
+    <header className="relative flex items-center justify-between px-4 md:px-6 h-16 border-b border-gray-200 dark:border-[#1e2d45] bg-white dark:bg-[#0d1220]">
 
-      <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
-        Digital Growth Command Centre
+      {/* ── Mobile Search Overlay ───────────────────────────────────────────── */}
+      {searchOpen && (
+        <div className="md:hidden absolute inset-0 z-10 flex items-center gap-3 px-4 bg-white dark:bg-[#0d1220]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-50 dark:bg-[#111827] flex-1">
+            <Search size={16} className="text-gray-400 shrink-0" />
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search clients, campaigns..."
+              className="bg-transparent outline-none text-sm w-full text-gray-700 dark:text-gray-200"
+            />
+          </div>
+          <button
+            onClick={() => setSearchOpen(false)}
+            className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800"
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* ── Left: Title ─────────────────────────────────────────────────────── */}
+      {/* On mobile, leave space for sidebar burger (left: 4rem) */}
+      <h1 className="text-sm md:text-base lg:text-lg font-semibold text-gray-800 dark:text-white truncate pl-10 md:pl-0">
+        {/* Short title on small screens */}
+        <span className="hidden sm:inline">Digital Growth Command Centre</span>
+        <span className="sm:hidden">DGCC</span>
       </h1>
 
-      <div className="flex items-center gap-4">
+      {/* ── Right: Actions ──────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 md:gap-3 shrink-0">
 
-        {/* SEARCH */}
-
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-50 dark:bg-[#111827] w-[260px]">
-
-          <Search size={16} className="text-gray-400" />
-
+        {/* Desktop Search */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-50 dark:bg-[#111827] w-[180px] lg:w-[260px]">
+          <Search size={16} className="text-gray-400 shrink-0" />
           <input
             type="text"
-            placeholder="Search clients, campaigns, leads..."
-            className="bg-transparent outline-none text-sm w-full text-gray-700 dark:text-gray-200"
+            placeholder="Search..."
+            className="bg-transparent outline-none text-sm w-full text-gray-700 dark:text-gray-200 placeholder:text-gray-400"
           />
-
         </div>
 
-        {/* NOTIFICATION */}
-
-        <button className="relative w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]">
-
-          <Bell size={16} className="text-yellow-500" />
-
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-
+        {/* Mobile Search Icon */}
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="md:hidden w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]"
+        >
+          <Search size={16} className="text-gray-500 dark:text-gray-400" />
         </button>
 
-        {/* THEME TOGGLE */}
+        {/* Notification */}
+        <button className="relative w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]">
+          <Bell size={16} className="text-yellow-500" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+        </button>
 
+        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className="w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]"
         >
-
           {mounted && (
             resolvedTheme === "dark"
               ? <Sun size={16} className="text-yellow-400" />
-              : <Moon size={16} />
+              : <Moon size={16} className="text-gray-500" />
           )}
-
         </button>
 
-        {/* PROFILE */}
-
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827] cursor-pointer">
-
-          <div className="w-7 h-7 flex items-center justify-center rounded-md bg-indigo-500 text-white text-xs font-semibold">
+        {/* Profile — icon only on mobile, full on md+ */}
+        <div className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827] cursor-pointer">
+          <div className="w-7 h-7 flex items-center justify-center rounded-md bg-indigo-500 text-white text-xs font-semibold shrink-0">
             AK
           </div>
-
-          <span className="text-sm text-gray-800 dark:text-gray-200">
+          <span className="hidden md:inline text-sm text-gray-800 dark:text-gray-200 whitespace-nowrap">
             Alex Kumar
           </span>
-
-          <ChevronDown size={14} className="text-gray-500" />
-
+          <ChevronDown size={14} className="hidden md:block text-gray-500" />
         </div>
 
       </div>
-
     </header>
   );
 }
