@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Sidebar from "@/components/layout/Sidebar";
 import { TopNavbar } from "@/components/layout/TopNavbar";
+import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,28 +31,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-               <ThemeProvider>
+        <ThemeProvider>
+          <ReactQueryProvider>
+            <div className="flex h-screen">
+              {/* SIDEBAR */}
+              <Sidebar />
 
-          <div className="flex h-screen">
+              {/* RIGHT SIDE */}
+              <div className="flex flex-col flex-1">
+                <TopNavbar />
 
-            {/* SIDEBAR */}
-            <Sidebar />
-
-            {/* RIGHT SIDE */}
-            <div className="flex flex-col flex-1">
-
-              <TopNavbar />
-
-              <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-[#020817]">
-                {children}
-              </main>
-
+                <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-[#020817]">
+                  {children}
+                </main>
+              </div>
             </div>
-
-          </div>
-
+          </ReactQueryProvider>
         </ThemeProvider>
-
       </body>
     </html>
   );

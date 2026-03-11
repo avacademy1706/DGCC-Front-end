@@ -923,6 +923,7 @@ function Step1Profile({ data, setData }: any) {
             <option value="">Select Industry</option>
             <option>Education</option><option>Healthcare</option><option>Finance</option>
             <option>E-Commerce</option><option>Real Estate</option><option>Technology</option>
+            <option>Sports</option><option>Health & Fitness</option><option>Commercial</option>
           </select>
         </div>
         <div>

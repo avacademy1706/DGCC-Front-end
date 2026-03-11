@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ExternalLink, Pencil } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -41,6 +42,7 @@ export default function ClientPortfolio() {
   const [clients, setClients]   = useState<any[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
+  
 
   // ─── Clients fetch karo ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -127,13 +129,13 @@ export default function ClientPortfolio() {
       {!loading && (
         <div className="grid grid-cols-3 gap-6">
 
-          {clients.length === 0 && !error && (
+          {/* {clients.length === 0 && !error && (
             <div className="col-span-3 text-center py-16 text-gray-400 dark:text-slate-500">
               <p className="text-4xl mb-4">📋</p>
               <p className="font-medium">Koi client nahi mila</p>
               <p className="text-sm mt-1">Pehla client onboard karo</p>
             </div>
-          )}
+          )} */}
 
           {clients.map((client, i) => {
             // Backend ke fields
@@ -213,6 +215,30 @@ export default function ClientPortfolio() {
                       : `Onboarding: Step ${step}/5`}
                   </p>
                 </div>
+                 <div className="flex justify-between mt-3">
+
+        {/* DETAILS */}
+
+        <Link
+          href={`/clients/${client._id}`}
+          className="flex items-center gap-2 text-xs px-3 py-2 rounded-md border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800"
+        >
+          <ExternalLink size={14} />
+          Details
+        </Link>
+
+        {/* EDIT */}
+
+        <button
+          // onClick={() => router.push(`/clients/edit/${client._id}`)}
+          className="flex items-center gap-2 text-xs px-3 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+        >
+          <Pencil size={14} />
+          Edit
+        </button>
+
+      </div>
+
 
               </div>
             );
