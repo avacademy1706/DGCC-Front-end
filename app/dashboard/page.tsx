@@ -102,9 +102,9 @@ export default function Dashboard() {
           <button className="flex-1 sm:flex-none px-3 md:px-4 py-2 text-xs md:text-sm rounded-md border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
             Import Data
           </button>
-          <button className="flex-1 sm:flex-none px-3 md:px-4 py-2 text-xs md:text-sm rounded-md bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+          {/* <button className="flex-1 sm:flex-none px-3 md:px-4 py-2 text-xs md:text-sm rounded-md bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
             + New Campaign
-          </button>
+          </button> */}
         </div>
       </div>
 
