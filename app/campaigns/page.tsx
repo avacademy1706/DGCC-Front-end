@@ -936,7 +936,7 @@ import { log } from "util";
 // ─────────────────────────────────────────────────────────────────────────────
 
 // FIX 1: "all" added to Platform type
-type Platform = "meta" | "google-ads" | "justdial" | "indiamart" | "all"; 
+type Platform = "meta" | "google-ads" | "justdial" | "indiamart" | "all";
 type DateRange = "last_7d" | "last_30d" | "last_90d" | "last_year";
 
 interface NormalizedCampaign {
@@ -3627,7 +3627,7 @@ export default function CampaignManagement() {
                                 borderRadius: "8px",
                                 fontSize: "11px",
                               }}
-                              formatter={(v: any, n: string) => [
+                              formatter={(v: any, n: string | undefined) => [
                                 n === "leads"
                                   ? v
                                   : `₹${Number(v).toLocaleString("en-IN")}`,
