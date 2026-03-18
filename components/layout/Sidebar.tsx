@@ -188,6 +188,7 @@ import {
   LayoutDashboard, Users, Target, Megaphone, FileText,
   Mail, Bot, BarChart3, FileBarChart, Package, Plug,
   Settings, Shield, Menu, X, ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
 const menu = [
@@ -222,6 +223,7 @@ const menu = [
       { name: "Integrations",   icon: Plug,    href: "/integrations" },
       { name: "Administration", icon: Shield,  href: "/administration" },
       { name: "Settings",       icon: Settings,href: "/settings" },
+      { name: "Privacy Policy" , icon: ShieldCheck , href: "/privacy-policy"}
     ],
   },
 ];

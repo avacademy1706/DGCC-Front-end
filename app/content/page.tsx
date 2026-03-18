@@ -1,1021 +1,3 @@
-
-
-// "use client";
-
-// import { Plus } from "lucide-react";
-
-// export default function ContentBrandPage() {
-
-//   const calendarDays = [
-//     "", "", "", "", "", "1", "2",
-//     "3","4","5","6","7","8","9",
-//     "10","11","12","13","14","15","16",
-//     "17","18","19","20","21","22","23"
-//   ];
-
-//   const posts = [
-//     {
-//       title: "EduTech Pro — Instagram",
-//       desc: "Admission open post · Creative #14 · 4 hashtags",
-//       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-//     },
-//     {
-//       title: "RE360 — Facebook + Instagram",
-//       desc: "New project launch video · 90s reel · 3 variants",
-//       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-//     },
-//     {
-//       title: "FinanceHub — LinkedIn",
-//       desc: "Thought leadership article · Interest rate blog post",
-//       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-//     },
-//   ];
-
-//   const assets = [
-//     {
-//       name: "EduTech_Banner_Q1.jpg",
-//       size: "1200×628 · 840 KB",
-//       color: "from-indigo-500 to-blue-500",
-//       icon: "🎓",
-//     },
-//     {
-//       name: "HealthFirst_Clinic_Ad.mp4",
-//       size: "16:9 · 30s · 18 MB",
-//       color: "from-green-500 to-teal-500",
-//       icon: "🏥",
-//     },
-//     {
-//       name: "RE360_Logo_2026.svg",
-//       size: "Vector · Brand doc",
-//       color: "from-orange-500 to-red-500",
-//       icon: "🏠",
-//     },
-//   ];
-
-//   return (
-//     <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gray-50 dark:bg-[#020817] text-gray-900 dark:text-white space-y-4 md:space-y-6">
-
-//       {/* ── HEADER ──────────────────────────────────────────────────── */}
-//       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-//         <div>
-//           <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
-//           <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-0.5">
-//             Content calendar, asset library and publishing tracker
-//           </p>
-//         </div>
-//         <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm transition-colors">
-//           <Plus size={15} />
-//           Schedule Post
-//         </button>
-//       </div>
-
-//       {/* ── TOP GRID — 1-col mobile, 2-col desktop ──────────────────── */}
-//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-
-//         {/* CALENDAR */}
-//         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//           <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//             Content Calendar — March 2026
-//           </h3>
-
-//           {/* Day headers */}
-//           <div className="grid grid-cols-7 text-center text-xs text-gray-500 dark:text-slate-400 mb-2 md:mb-3">
-//             {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
-//               <div key={d} className="py-1">{d}</div>
-//             ))}
-//           </div>
-
-//           {/* Calendar grid — smaller cells on mobile */}
-//           <div className="grid grid-cols-7 gap-1 md:gap-2 text-xs md:text-sm">
-//             {calendarDays.map((day, i) => (
-//               <div
-//                 key={i}
-//                 className={`h-9 md:h-14 lg:h-16 flex items-center justify-center rounded-md transition-colors
-//                   ${day === "7"
-//                     ? "border border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-semibold text-indigo-600 dark:text-indigo-400"
-//                     : day
-//                     ? "hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer"
-//                     : ""
-//                   }`}
-//               >
-//                 {day}
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* SCHEDULED POSTS */}
-//         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//           <h3 className="font-semibold text-sm md:text-base mb-3 md:mb-4">
-//             Scheduled Posts This Week
-//           </h3>
-
-//           <div className="space-y-2 md:space-y-3">
-//             {posts.map((post, i) => (
-//               <div
-//                 key={i}
-//                 className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between p-3 md:p-4 rounded-lg border border-gray-200 dark:border-slate-700"
-//               >
-//                 <div className="min-w-0">
-//                   <p className="font-medium text-xs md:text-sm text-gray-900 dark:text-white">
-//                     {post.title}
-//                   </p>
-//                   <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-//                     {post.desc}
-//                   </p>
-//                 </div>
-//                 <span className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap w-fit shrink-0 font-medium ${post.color}`}>
-//                   {post.time}
-//                 </span>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//       </div>
-
-//       {/* ── ASSET LIBRARY ───────────────────────────────────────────── */}
-//       <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//         <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">Asset Library</h3>
-
-//         {/* 2-col mobile → 3-col tablet → 4-col desktop */}
-//         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-
-//           {assets.map((asset, i) => (
-//             <div
-//               key={i}
-//               className="rounded-lg border border-gray-200 dark:border-slate-800 p-2.5 md:p-3 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
-//             >
-//               <div className={`h-16 md:h-20 lg:h-24 rounded-md flex items-center justify-center text-xl md:text-2xl text-white bg-gradient-to-r ${asset.color}`}>
-//                 {asset.icon}
-//               </div>
-//               <p className="text-xs md:text-sm mt-2 font-medium text-gray-900 dark:text-white truncate">
-//                 {asset.name}
-//               </p>
-//               <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 truncate">
-//                 {asset.size}
-//               </p>
-//             </div>
-//           ))}
-
-//           {/* UPLOAD CARD */}
-//           <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-lg text-gray-400 dark:text-slate-500 cursor-pointer hover:border-indigo-400 hover:text-indigo-400 transition-colors min-h-[100px] md:min-h-[120px] gap-1.5 p-3">
-//             <Plus size={18} />
-//             <p className="text-xs md:text-sm font-medium">Upload Asset</p>
-//           </div>
-
-//         </div>
-//       </div>
-
-//     </div>
-//   );
-// }
-
-
-// "use client";
-
-// import { Plus } from "lucide-react";
-// import { useState } from "react";
-// import SchedulePostModal from "@/components/SchedulePostModal";
-
-// export default function ContentBrandPage() {
-
-//   const [openModal, setOpenModal] = useState(false)
-
-//   const calendarDays = [
-//     "", "", "", "", "", "1", "2",
-//     "3", "4", "5", "6", "7", "8", "9",
-//     "10", "11", "12", "13", "14", "15", "16",
-//     "17", "18", "19", "20", "21", "22", "23"
-//   ];
-
-//   const posts = [
-//     {
-//       title: "EduTech Pro — Instagram",
-//       desc: "Admission open post · Creative #14 · 4 hashtags",
-//       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-//     },
-//     {
-//       title: "RE360 — Facebook + Instagram",
-//       desc: "New project launch video · 90s reel · 3 variants",
-//       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-//     },
-//     {
-//       title: "FinanceHub — LinkedIn",
-//       desc: "Thought leadership article · Interest rate blog post",
-//       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-//     },
-//   ];
-
-//   const assets = [
-//     {
-//       name: "EduTech_Banner_Q1.jpg",
-//       size: "1200×628 · 840 KB",
-//       color: "from-indigo-500 to-blue-500",
-//       icon: "🎓",
-//     },
-//     {
-//       name: "HealthFirst_Clinic_Ad.mp4",
-//       size: "16:9 · 30s · 18 MB",
-//       color: "from-green-500 to-teal-500",
-//       icon: "🏥",
-//     },
-//     {
-//       name: "RE360_Logo_2026.svg",
-//       size: "Vector · Brand doc",
-//       color: "from-orange-500 to-red-500",
-//       icon: "🏠",
-//     },
-//   ];
-
-//   return (
-//     <>
-//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gray-50 dark:bg-[#020817] text-gray-900 dark:text-white space-y-4 md:space-y-6">
-
-//         {/* HEADER */}
-//         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-//           <div>
-//             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
-//             <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-0.5">
-//               Content calendar, asset library and publishing tracker
-//             </p>
-//           </div>
-
-//           <button
-//             onClick={() => setOpenModal(true)}
-//             className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm transition-colors"
-//           >
-//             <Plus size={15} />
-//             Schedule Post
-//           </button>
-//         </div>
-
-//         {/* TOP GRID */}
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-
-//           {/* CALENDAR */}
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//             <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//               Content Calendar — March 2026
-//             </h3>
-
-//             <div className="grid grid-cols-7 text-center text-xs text-gray-500 dark:text-slate-400 mb-2 md:mb-3">
-//               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-//                 <div key={d} className="py-1">{d}</div>
-//               ))}
-//             </div>
-
-//             <div className="grid grid-cols-7 gap-1 md:gap-2 text-xs md:text-sm">
-//               {calendarDays.map((day, i) => (
-//                 <div
-//                   key={i}
-//                   className={`h-9 md:h-14 lg:h-16 flex items-center justify-center rounded-md transition-colors
-//                     ${day === "7"
-//                       ? "border border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 font-semibold text-indigo-600 dark:text-indigo-400"
-//                       : day
-//                         ? "hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer"
-//                         : ""
-//                     }`}
-//                 >
-//                   {day}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* SCHEDULED POSTS */}
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//             <h3 className="font-semibold text-sm md:text-base mb-3 md:mb-4">
-//               Scheduled Posts This Week
-//             </h3>
-
-//             <div className="space-y-2 md:space-y-3">
-//               {posts.map((post, i) => (
-//                 <div
-//                   key={i}
-//                   className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between p-3 md:p-4 rounded-lg border border-gray-200 dark:border-slate-700"
-//                 >
-//                   <div className="min-w-0">
-//                     <p className="font-medium text-xs md:text-sm text-gray-900 dark:text-white">
-//                       {post.title}
-//                     </p>
-//                     <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-//                       {post.desc}
-//                     </p>
-//                   </div>
-//                   <span className={`text-xs px-2.5 py-1 rounded-full whitespace-nowrap w-fit shrink-0 font-medium ${post.color}`}>
-//                     {post.time}
-//                   </span>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-
-//         </div>
-
-//         {/* ASSET LIBRARY */}
-//         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-//           <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//             Asset Library
-//           </h3>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-
-//             {assets.map((asset, i) => (
-//               <div
-//                 key={i}
-//                 className="rounded-lg border border-gray-200 dark:border-slate-800 p-2.5 md:p-3 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
-//               >
-//                 <div className={`h-16 md:h-20 lg:h-24 rounded-md flex items-center justify-center text-xl md:text-2xl text-white bg-gradient-to-r ${asset.color}`}>
-//                   {asset.icon}
-//                 </div>
-//                 <p className="text-xs md:text-sm mt-2 font-medium text-gray-900 dark:text-white truncate">
-//                   {asset.name}
-//                 </p>
-//                 <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 truncate">
-//                   {asset.size}
-//                 </p>
-//               </div>
-//             ))}
-
-//             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-lg text-gray-400 dark:text-slate-500 cursor-pointer hover:border-indigo-400 hover:text-indigo-400 transition-colors min-h-[100px] md:min-h-[120px] gap-1.5 p-3">
-//               <Plus size={18} />
-//               <p className="text-xs md:text-sm font-medium">Upload Asset</p>
-//             </div>
-
-//           </div>
-//         </div>
-
-//       </div>
-
-//       {/* MODAL */}
-//       <SchedulePostModal
-//         open={openModal}
-//         onClose={() => setOpenModal(false)}
-//         clients={[]}
-//       />
-//     </>
-//   );
-// }
-
-
-// "use client";
-
-// import { Plus } from "lucide-react";
-// import { useState, useEffect } from "react";
-// import SchedulePostModal from "@/components/SchedulePostModal";
-
-// export default function ContentBrandPage() {
-
-//   const [openModal, setOpenModal] = useState(false);
-//   const [calendarPosts, setCalendarPosts] = useState([]);
-
-//   /* REAL CALENDAR LOGIC */
-
-//   const today = new Date();
-
-//   const year = today.getFullYear();
-//   const month = today.getMonth();
-
-//   const firstDay = new Date(year, month, 1).getDay();
-//   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-//   const calendarDays = [
-//     ...Array(firstDay).fill(""),
-//     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-//   ];
-
-//   /* POSTS PREVIEW (STATIC FOR NOW) */
-
-//   const posts = [
-//     {
-//       title: "EduTech Pro — Instagram",
-//       desc: "Admission open post · Creative #14 · 4 hashtags",
-//       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-//     },
-//     {
-//       title: "RE360 — Facebook + Instagram",
-//       desc: "New project launch video · 90s reel · 3 variants",
-//       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-//     },
-//     {
-//       title: "FinanceHub — LinkedIn",
-//       desc: "Thought leadership article · Interest rate blog post",
-//       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-//     },
-//   ];
-
-//   /* ASSETS */
-
-//   const assets = [
-//     {
-//       name: "EduTech_Banner_Q1.jpg",
-//       size: "1200×628 · 840 KB",
-//       color: "from-indigo-500 to-blue-500",
-//       icon: "🎓",
-//     },
-//     {
-//       name: "HealthFirst_Clinic_Ad.mp4",
-//       size: "16:9 · 30s · 18 MB",
-//       color: "from-green-500 to-teal-500",
-//       icon: "🏥",
-//     },
-//     {
-//       name: "RE360_Logo_2026.svg",
-//       size: "Vector · Brand doc",
-//       color: "from-orange-500 to-red-500",
-//       icon: "🏠",
-//     },
-//   ];
-
-//   /* FETCH CALENDAR POSTS */
-
-//   const fetchCalendarPosts = async () => {
-//     const res = await fetch(
-//       `/api/content/calendar-posts?month=${month + 1}&year=${year}&clientId=CLIENT_ID_HERE`
-//     );
-
-//     const data = await res.json();
-
-//     setCalendarPosts(data.data || []);
-//   };
-
-//   useEffect(() => {
-//     fetchCalendarPosts();
-//   }, []);
-
-//   /* EXCEL CALENDAR UPLOAD */
-
-//   const handleCalendarUpload = async (e) => {
-//     const file = e.target.files[0];
-
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     formData.append("clientId", "CLIENT_ID_HERE");
-
-//     await fetch("/api/content/upload-calendar", {
-//       method: "POST",
-//       body: formData,
-//     });
-
-//     fetchCalendarPosts();
-//   };
-
-//   return (
-//     <>
-//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gray-50 dark:bg-[#020817] text-gray-900 dark:text-white space-y-4 md:space-y-6">
-
-//         {/* HEADER */}
-
-//         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-
-//           <div>
-//             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
-
-//             <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-0.5">
-//               Content calendar, asset library and publishing tracker
-//             </p>
-//           </div>
-
-//           <div className="flex gap-2">
-
-//             <button
-//               onClick={() => setOpenModal(true)}
-//               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
-//             >
-//               <Plus size={15} />
-//               Schedule Post
-//             </button>
-
-//             <label className="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-slate-700 rounded-lg text-sm">
-
-//               Upload Calendar
-
-//               <input
-//                 type="file"
-//                 accept=".xlsx,.csv"
-//                 onChange={handleCalendarUpload}
-//                 className="hidden"
-//               />
-
-//             </label>
-
-//           </div>
-
-//         </div>
-
-//         {/* TOP GRID */}
-
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-
-//           {/* CALENDAR */}
-
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//             <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-
-//               Content Calendar —{" "}
-//               {today.toLocaleString("default", { month: "long" })} {year}
-
-//             </h3>
-
-//             <div className="grid grid-cols-7 text-center text-xs text-gray-500 dark:text-slate-400 mb-2 md:mb-3">
-//               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-//                 <div key={d} className="py-1">{d}</div>
-//               ))}
-//             </div>
-
-//             <div className="grid grid-cols-7 gap-1 md:gap-2 text-xs md:text-sm">
-
-//               {calendarDays.map((day, i) => {
-
-//                 const dayPost = calendarPosts.find(
-//                   (post) =>
-//                     new Date(post.scheduleDate).getDate() === Number(day)
-//                 );
-
-//                 return (
-
-//                   <div
-//                     key={i}
-//                     className="relative group h-10 md:h-14 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-slate-800"
-//                   >
-
-//                     {day}
-
-//                     {dayPost && (
-//                       <>
-//                         <span className="absolute bottom-1 w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-
-//                         <div className="absolute hidden group-hover:block top-full mt-1 w-52 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg rounded-lg p-3 z-50">
-
-//                           <p className="font-medium text-sm">
-//                             {dayPost.platform}
-//                           </p>
-
-//                           <p className="text-xs text-gray-500 mt-1">
-//                             {dayPost.caption}
-//                           </p>
-
-//                         </div>
-//                       </>
-//                     )}
-
-//                   </div>
-
-//                 );
-
-//               })}
-
-//             </div>
-
-//           </div>
-
-//           {/* SCHEDULED POSTS */}
-
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//             <h3 className="font-semibold text-sm md:text-base mb-3 md:mb-4">
-//               Scheduled Posts This Week
-//             </h3>
-
-//             <div className="space-y-2 md:space-y-3">
-
-//               {posts.map((post, i) => (
-
-//                 <div
-//                   key={i}
-//                   className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between p-3 md:p-4 rounded-lg border border-gray-200 dark:border-slate-700"
-//                 >
-
-//                   <div>
-
-//                     <p className="font-medium text-sm">
-//                       {post.title}
-//                     </p>
-
-//                     <p className="text-xs text-gray-500">
-//                       {post.desc}
-//                     </p>
-
-//                   </div>
-
-//                   <span className={`text-xs px-2 py-1 rounded-full ${post.color}`}>
-//                     {post.time}
-//                   </span>
-
-//                 </div>
-
-//               ))}
-
-//             </div>
-
-//           </div>
-
-//         </div>
-
-//         {/* ASSET LIBRARY */}
-
-//         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//           <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//             Asset Library
-//           </h3>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
-//             {assets.map((asset, i) => (
-
-//               <div
-//                 key={i}
-//                 className="rounded-lg border border-gray-200 dark:border-slate-800 p-3"
-//               >
-
-//                 <div
-//                   className={`h-20 rounded-md flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color}`}
-//                 >
-//                   {asset.icon}
-//                 </div>
-
-//                 <p className="text-sm mt-2 font-medium">{asset.name}</p>
-
-//                 <p className="text-xs text-gray-500">{asset.size}</p>
-
-//               </div>
-
-//             ))}
-
-//           </div>
-
-//         </div>
-
-//       </div>
-
-//       {/* MODAL */}
-
-//       <SchedulePostModal
-//         open={openModal}
-//         onClose={() => setOpenModal(false)}
-//         clients={[]}
-//       />
-
-//     </>
-//   );
-// }
-
-// "use client";
-
-// import { Plus } from "lucide-react";
-// import { useState } from "react";
-// import SchedulePostModal from "@/components/SchedulePostModal";
-// import { useGet } from "@/hooks/useGet";
-// import { apiClient } from "@/lib/apiClient";
-
-// export default function ContentBrandPage() {
-
-//   const [openModal, setOpenModal] = useState(false);
-//   const [selectedClient, setSelectedClient] = useState("");
-
-//   /* REAL CALENDAR */
-
-//   const today = new Date();
-//   const year = today.getFullYear();
-//   const month = today.getMonth();
-
-//   const firstDay = new Date(year, month, 1).getDay();
-//   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-//   const calendarDays = [
-//     ...Array(firstDay).fill(""),
-//     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-//   ];
-
-//   /* CLIENT LIST */
-
-//   const { data: clientsData } = useGet(
-//     "clients",
-//     "http://localhost:5000/api/clients"
-//   );
-
-//   const clients = clientsData?.clients || [];
-
-//   /* CALENDAR POSTS */
-
-//   const { data: calendarData } = useGet(
-//     ["calendarPosts", selectedClient],
-//     `http://localhost:5000/api/content/calendar-posts?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
-//     {
-//       enabled: !!selectedClient,
-//     }
-//   );
-
-//   const calendarPosts = calendarData?.data || [];
-
-//   /* CALENDAR UPLOAD */
-
-//   const handleCalendarUpload = async (e) => {
-
-//     if (!selectedClient) {
-//       alert("Please select client first");
-//       return;
-//     }
-
-//     const file = e.target.files[0];
-
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     formData.append("clientId", selectedClient);
-
-//     await apiClient.post(
-//       "http://localhost:5000/api/content/upload-calendar",
-//       formData
-//     );
-//   };
-
-//   /* STATIC POSTS */
-
-//   const posts = [
-//     {
-//       title: "EduTech Pro — Instagram",
-//       desc: "Admission open post · Creative #14 · 4 hashtags",
-//       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-//     },
-//     {
-//       title: "RE360 — Facebook + Instagram",
-//       desc: "New project launch video · 90s reel · 3 variants",
-//       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-//     },
-//     {
-//       title: "FinanceHub — LinkedIn",
-//       desc: "Thought leadership article · Interest rate blog post",
-//       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-//     },
-//   ];
-
-//   /* ASSETS */
-
-//   const assets = [
-//     {
-//       name: "EduTech_Banner_Q1.jpg",
-//       size: "1200×628 · 840 KB",
-//       color: "from-indigo-500 to-blue-500",
-//       icon: "🎓",
-//     },
-//     {
-//       name: "HealthFirst_Clinic_Ad.mp4",
-//       size: "16:9 · 30s · 18 MB",
-//       color: "from-green-500 to-teal-500",
-//       icon: "🏥",
-//     },
-//     {
-//       name: "RE360_Logo_2026.svg",
-//       size: "Vector · Brand doc",
-//       color: "from-orange-500 to-red-500",
-//       icon: "🏠",
-//     },
-//   ];
-
-//   return (
-//     <>
-//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gray-50 dark:bg-[#020817] text-gray-900 dark:text-white space-y-4 md:space-y-6">
-
-//         {/* HEADER */}
-
-//         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-
-//           <div>
-//             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
-
-//             <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-0.5">
-//               Content calendar, asset library and publishing tracker
-//             </p>
-//           </div>
-
-//           <div className="flex gap-2 flex-wrap">
-
-//             {/* CLIENT SELECT */}
-
-//             <select
-//               value={selectedClient}
-//               onChange={(e) => setSelectedClient(e.target.value)}
-//               className="px-3 py-2 rounded-lg border text-sm bg-white dark:bg-slate-800"
-//             >
-//               <option value="">Select Client</option>
-
-//               {clients.map((client) => (
-//                 <option key={client._id} value={client._id}>
-//                   {client.profile?.companyName}
-//                 </option>
-//               ))}
-//             </select>
-
-//             {/* SCHEDULE POST */}
-
-//             <button
-//               onClick={() => setOpenModal(true)}
-//               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
-//             >
-//               <Plus size={15} />
-//               Schedule Post
-//             </button>
-
-//             {/* CALENDAR UPLOAD */}
-
-//             <label className="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-slate-700 rounded-lg text-sm">
-//               Upload Calendar
-//               <input
-//                 type="file"
-//                 accept=".xlsx,.csv"
-//                 onChange={handleCalendarUpload}
-//                 className="hidden"
-//               />
-//             </label>
-
-//           </div>
-
-//         </div>
-
-//         {/* CALENDAR + POSTS */}
-
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-
-//           {/* CALENDAR */}
-
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//             <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//               Content Calendar —{" "}
-//               {today.toLocaleString("default", { month: "long" })} {year}
-//             </h3>
-
-//             <div className="grid grid-cols-7 text-center text-xs text-gray-500 mb-2">
-//               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-//                 <div key={d}>{d}</div>
-//               ))}
-//             </div>
-
-//             <div className="grid grid-cols-7 gap-1 text-xs md:text-sm">
-
-//               {calendarDays.map((day, i) => {
-
-//                 const dayPost = calendarPosts.find(
-//                   post => new Date(post.scheduleDate).getDate() === Number(day)
-//                 );
-
-//                 return (
-//                   <div
-//                     key={i}
-//                     className="relative group h-10 flex items-center justify-center rounded-md hover:bg-gray-100"
-//                   >
-//                     {day}
-
-//                     {dayPost && (
-//                       <>
-//                         <span className="absolute bottom-1 w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-
-//                         <div className="absolute hidden group-hover:block top-full mt-1 w-52 bg-white border shadow-lg rounded-lg p-3 z-50">
-
-//                           <p className="font-medium text-sm">
-//                             {dayPost.platform}
-//                           </p>
-
-//                           <p className="text-xs text-gray-500 mt-1">
-//                             {dayPost.caption}
-//                           </p>
-
-//                         </div>
-//                       </>
-//                     )}
-
-//                   </div>
-//                 );
-
-//               })}
-
-//             </div>
-
-//           </div>
-
-//           {/* SCHEDULED POSTS */}
-
-//           <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//             <h3 className="font-semibold text-sm mb-4">
-//               Scheduled Posts This Week
-//             </h3>
-
-//             <div className="space-y-3">
-
-//               {posts.map((post, i) => (
-
-//                 <div
-//                   key={i}
-//                   className="flex justify-between p-3 rounded-lg border"
-//                 >
-
-//                   <div>
-
-//                     <p className="font-medium text-sm">
-//                       {post.title}
-//                     </p>
-
-//                     <p className="text-xs text-gray-500">
-//                       {post.desc}
-//                     </p>
-
-//                   </div>
-
-//                   <span className={`text-xs px-2 py-1 rounded-full ${post.color}`}>
-//                     {post.time}
-//                   </span>
-
-//                 </div>
-
-//               ))}
-
-//             </div>
-
-//           </div>
-
-//         </div>
-
-
-//         {/* ASSET LIBRARY */}
-
-//         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
-
-//           <h3 className="font-semibold text-sm md:text-base mb-4 md:mb-6">
-//             Asset Library
-//           </h3>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
-//             {assets.map((asset, i) => (
-
-//               <div
-//                 key={i}
-//                 className="rounded-lg border border-gray-200 dark:border-slate-800 p-3 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
-//               >
-
-//                 <div
-//                   className={`h-20 rounded-md flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color}`}
-//                 >
-//                   {asset.icon}
-//                 </div>
-
-//                 <p className="text-sm mt-2 font-medium truncate">
-//                   {asset.name}
-//                 </p>
-
-//                 <p className="text-xs text-gray-500 truncate">
-//                   {asset.size}
-//                 </p>
-
-//               </div>
-
-//             ))}
-
-//             {/* Upload Asset Card */}
-
-//             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-lg text-gray-400 dark:text-slate-500 cursor-pointer hover:border-indigo-400 hover:text-indigo-400 transition-colors min-h-[100px] gap-1.5 p-3">
-
-//               <Plus size={18} />
-
-//               <p className="text-xs md:text-sm font-medium">
-//                 Upload Asset
-//               </p>
-
-//             </div>
-
-//           </div>
-
-//         </div>
-//       </div>
-
-//       {/* MODAL */}
-
-//       <SchedulePostModal
-//         open={openModal}
-//         onClose={() => setOpenModal(false)}
-//         clients={clients}
-//       />
-
-//     </>
-//   );
-// }
-
 // "use client";
 
 // import { Plus } from "lucide-react";
@@ -1032,8 +14,6 @@
 //   const [openModal, setOpenModal] = useState(false);
 //   const [selectedClient, setSelectedClient] = useState("");
 
-//   /* ---------------- REAL CALENDAR ---------------- */
-
 //   const today = new Date();
 //   const year = today.getFullYear();
 //   const month = today.getMonth();
@@ -1046,16 +26,12 @@
 //     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
 //   ];
 
-//   /* ---------------- CLIENT LIST ---------------- */
-
 //   const { data: clientsData } = useGet(
 //     "clients",
 //     "http://localhost:5000/api/clients"
 //   );
 
 //   const clients = clientsData?.clients || [];
-
-//   /* ---------------- CALENDAR POSTS ---------------- */
 
 //   const { data: calendarData } = useGet(
 //     ["calendarPosts", selectedClient],
@@ -1066,386 +42,76 @@
 //   );
 
 //   const calendarPosts = calendarData?.data || [];
-
-//   /* ---------------- CALENDAR UPLOAD ---------------- */
-
-//   const handleCalendarUpload = async (e) => {
-
-//     if (!selectedClient) {
-//       alert("Please select client first");
-//       return;
-//     }
-
-//     const file = e.target.files[0];
-
-//     if (!file) {
-//       alert("Please select file");
-//       return;
-//     }
-
-//     if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".csv")) {
-//       alert("Only Excel or CSV allowed");
-//       return;
-//     }
-
-//     try {
-
-//       const formData = new FormData();
-
-//       formData.append("file", file);
-//       formData.append("clientId", selectedClient);
-
-//       await apiClient.post(
-//         "http://localhost:5000/api/content/upload-calendar",
-//         formData,
-//         {
-//           headers: {
-//             "Content-Type": "multipart/form-data",
-//           },
-//         }
-//       );
-
-//       alert("Calendar uploaded successfully");
-
-//       /* refetch calendar posts */
-
-//       queryClient.invalidateQueries(["calendarPosts", selectedClient]);
-
-//     } catch (error) {
-
-//       console.error(error);
-//       alert("Upload failed");
-
-//     }
-
-//   };
-
-//   /* ---------------- STATIC POSTS ---------------- */
-
-//   const posts = [
-//     {
-//       title: "EduTech Pro — Instagram",
-//       desc: "Admission open post · Creative #14 · 4 hashtags",
-//       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-//     },
-//     {
-//       title: "RE360 — Facebook + Instagram",
-//       desc: "New project launch video · 90s reel · 3 variants",
-//       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-//     },
-//     {
-//       title: "FinanceHub — LinkedIn",
-//       desc: "Thought leadership article · Interest rate blog post",
-//       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-//     },
-//   ];
-
-//   /* ---------------- ASSETS ---------------- */
-
-//   const assets = [
-//     {
-//       name: "EduTech_Banner_Q1.jpg",
-//       size: "1200×628 · 840 KB",
-//       color: "from-indigo-500 to-blue-500",
-//       icon: "🎓",
-//     },
-//     {
-//       name: "HealthFirst_Clinic_Ad.mp4",
-//       size: "16:9 · 30s · 18 MB",
-//       color: "from-green-500 to-teal-500",
-//       icon: "🏥",
-//     },
-//     {
-//       name: "RE360_Logo_2026.svg",
-//       size: "Vector · Brand doc",
-//       color: "from-orange-500 to-red-500",
-//       icon: "🏠",
-//     },
-//   ];
-
-//   return (
-//     <>
-//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gray-50 dark:bg-[#020817] text-gray-900 dark:text-white space-y-6">
-
-//         {/* ---------------- HEADER ---------------- */}
-
-//         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-
-//           <div>
-//             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
-//             <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400">
-//               Content calendar, asset library and publishing tracker
-//             </p>
-//           </div>
-
-//           <div className="flex gap-2 flex-wrap">
-
-//             {/* CLIENT SELECT */}
-
-//             <select
-//               value={selectedClient}
-//               onChange={(e) => setSelectedClient(e.target.value)}
-//               className="px-3 py-2 rounded-lg border text-sm bg-white dark:bg-slate-800"
-//             >
-//               <option value="">Select Client</option>
-
-//               {clients.map((client) => (
-//                 <option key={client._id} value={client._id}>
-//                   {client.profile?.companyName}
-//                 </option>
-//               ))}
-//             </select>
-
-//             {/* SCHEDULE POST */}
-
-//             <button
-//               onClick={() => setOpenModal(true)}
-//               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
-//             >
-//               <Plus size={15} />
-//               Schedule Post
-//             </button>
-
-//             {/* CALENDAR UPLOAD */}
-
-//             <label className="cursor-pointer px-4 py-2 bg-gray-200 dark:bg-slate-700 rounded-lg text-sm">
-//               Upload Calendar
-//               <input
-//                 type="file"
-//                 accept=".xlsx,.csv"
-//                 onChange={handleCalendarUpload}
-//                 className="hidden"
-//               />
-//             </label>
-
-//           </div>
-
-//         </div>
-
-//         {/* ---------------- CALENDAR + POSTS ---------------- */}
-
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-//           {/* CALENDAR */}
-
-//           <div className="rounded-xl border bg-white dark:bg-[#0b1220] p-6">
-
-//             <h3 className="font-semibold mb-6">
-//               Content Calendar —{" "}
-//               {today.toLocaleString("default", { month: "long" })} {year}
-//             </h3>
-
-//             <div className="grid grid-cols-7 text-center text-xs mb-2">
-//               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-//                 <div key={d}>{d}</div>
-//               ))}
-//             </div>
-
-//             <div className="grid grid-cols-7 gap-2 text-sm">
-
-//               {calendarDays.map((day, i) => {
-
-//                 const dayPost = calendarPosts.find(
-//                   post => new Date(post.scheduleDate).getDate() === Number(day)
-//                 );
-
-//                 return (
-//                   <div
-//                     key={i}
-//                     className="relative group h-12 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-slate-800"
-//                   >
-
-//                     {day}
-
-//                     {dayPost && (
-//                       <>
-//                         <span className="absolute bottom-1 w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-
-//                         <div className="absolute hidden group-hover:block top-full mt-1 w-52 bg-white dark:bg-slate-900 border shadow-lg rounded-lg p-3 z-50">
-
-//                           <p className="font-medium text-sm">
-//                             {dayPost.platform}
-//                           </p>
-
-//                           <p className="text-xs text-gray-500 mt-1">
-//                             {dayPost.caption}
-//                           </p>
-
-//                         </div>
-//                       </>
-//                     )}
-
-//                   </div>
-//                 );
-
-//               })}
-
-//             </div>
-
-//           </div>
-
-//           {/* SCHEDULED POSTS */}
-
-//           <div className="rounded-xl border bg-white dark:bg-[#0b1220] p-6">
-
-//             <h3 className="font-semibold mb-4">
-//               Scheduled Posts This Week
-//             </h3>
-
-//             <div className="space-y-3">
-
-//               {posts.map((post, i) => (
-
-//                 <div key={i} className="flex justify-between p-3 border rounded-lg">
-
-//                   <div>
-//                     <p className="font-medium text-sm">{post.title}</p>
-//                     <p className="text-xs text-gray-500">{post.desc}</p>
-//                   </div>
-
-//                   <span className={`text-xs px-2 py-1 rounded-full ${post.color}`}>
-//                     {post.time}
-//                   </span>
-
-//                 </div>
-
-//               ))}
-
-//             </div>
-
-//           </div>
-
-//         </div>
-
-//         {/* ---------------- ASSET LIBRARY ---------------- */}
-
-//         <div className="rounded-xl border bg-white dark:bg-[#0b1220] p-6">
-
-//           <h3 className="font-semibold mb-6">Asset Library</h3>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
-//             {assets.map((asset, i) => (
-
-//               <div key={i} className="rounded-lg border p-3">
-
-//                 <div className={`h-20 flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color}`}>
-//                   {asset.icon}
-//                 </div>
-
-//                 <p className="text-sm mt-2 font-medium">{asset.name}</p>
-//                 <p className="text-xs text-gray-500">{asset.size}</p>
-
-//               </div>
-
-//             ))}
-
-//             <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg text-gray-400 hover:border-indigo-400 hover:text-indigo-400 p-3">
-
-//               <Plus size={18} />
-//               <p className="text-xs mt-1">Upload Asset</p>
-
-//             </div>
-
-//           </div>
-
-//         </div>
-
-//       </div>
-
-//       <SchedulePostModal
-//         open={openModal}
-//         onClose={() => setOpenModal(false)}
-//         clients={clients}
-//       />
-
-//     </>
-//   );
-// }
-
-
-// "use client";
-
-// import { Plus } from "lucide-react";
-// import { useState } from "react";
-// import SchedulePostModal from "@/components/SchedulePostModal";
-// import { useGet } from "@/hooks/useGet";
-// import { apiClient } from "@/lib/apiClient";
-// import { useQueryClient } from "@tanstack/react-query";
-
-// export default function ContentBrandPage() {
-
-//   const queryClient = useQueryClient();
-
-//   const [openModal, setOpenModal] = useState(false);
-//   const [selectedClient, setSelectedClient] = useState("");
-
-//   /* ---------------- REAL CALENDAR ---------------- */
-
-//   const today = new Date();
-//   const year = today.getFullYear();
-//   const month = today.getMonth();
-
-//   const firstDay = new Date(year, month, 1).getDay();
-//   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-//   const calendarDays = [
-//     ...Array(firstDay).fill(""),
-//     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-//   ];
-
-//   /* ---------------- CLIENT LIST ---------------- */
-
-//   const { data: clientsData } = useGet(
-//     "clients",
-//     "http://localhost:5000/api/clients"
-//   );
-
-//   const clients = clientsData?.clients || [];
-
-//   /* ---------------- CALENDAR POSTS ---------------- */
-
-//   const { data: calendarData } = useGet(
-//     ["calendarPosts", selectedClient],
-//     `http://localhost:5000/api/content/calendar-posts?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
-//     {
-//       enabled: !!selectedClient,
-//     }
-//   );
-
-//   const calendarPosts = calendarData?.data || [];
-
-//   /* ---------------- DUMMY POSTS ---------------- */
 
 //   const dummyPosts = [
 //     {
 //       title: "EduTech Pro — Instagram",
 //       desc: "Admission open post · Creative #14 · 4 hashtags",
 //       time: "Today 6PM",
-//       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
 //     },
 //     {
 //       title: "RE360 — Facebook + Instagram",
 //       desc: "New project launch video · 90s reel · 3 variants",
 //       time: "Tomorrow 10AM",
-//       color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
 //     },
 //     {
 //       title: "FinanceHub — LinkedIn",
 //       desc: "Thought leadership article · Interest rate blog post",
 //       time: "Mar 10 9AM",
-//       color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
 //     },
 //   ];
 
-//   /* ---------------- DISPLAY POSTS ---------------- */
-
 //   const displayPosts = calendarPosts.length ? calendarPosts : dummyPosts;
 
-//   /* ---------------- CALENDAR UPLOAD ---------------- */
+//   // const handleCalendarUpload = async (e) => {
+
+//   //   if (!selectedClient) {
+//   //     alert("Please select client first");
+//   //     return;
+//   //   }
+
+//   //   const file = e.target.files[0];
+
+//   //   if (!file) {
+//   //     alert("Please select file");
+//   //     return;
+//   //   }
+
+//   //   if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".csv")) {
+//   //     alert("Only Excel or CSV allowed");
+//   //     return;
+//   //   }
+
+//   //   try {
+
+//   //     const formData = new FormData();
+
+//   //     formData.append("file", file);
+//   //     formData.append("clientId", selectedClient);
+
+//   //     await apiClient.post(
+//   //       "http://localhost:5000/api/content/upload-calendar",
+//   //       formData,
+//   //       {
+//   //         headers: {
+//   //           "Content-Type": "multipart/form-data",
+//   //         },
+//   //       }
+//   //     );
+
+//   //     alert("Calendar uploaded successfully");
+
+//   //     queryClient.invalidateQueries(["calendarPosts", selectedClient]);
+
+//   //   } catch (error) {
+
+//   //     console.error(error);
+//   //     alert("Upload failed");
+
+//   //   }
+
+//   // };
+
 
 //   const handleCalendarUpload = async (e) => {
 
@@ -1461,8 +127,13 @@
 //       return;
 //     }
 
-//     if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".csv")) {
-//       alert("Only Excel or CSV allowed");
+//     const validTypes = [".xlsx", ".csv"];
+
+//     const isValid = validTypes.some(type => file.name.toLowerCase().endsWith(type));
+
+//     if (!isValid) {
+//       alert("Only Excel (.xlsx) or CSV files allowed");
+//       e.target.value = "";
 //       return;
 //     }
 
@@ -1485,18 +156,26 @@
 
 //       alert("Calendar uploaded successfully");
 
+//       /* Refresh calendar */
+
 //       queryClient.invalidateQueries(["calendarPosts", selectedClient]);
+
+//       /* Reset file input so same file can upload again */
+
+//       e.target.value = "";
 
 //     } catch (error) {
 
-//       console.error(error);
-//       alert("Upload failed");
+//       console.error("Upload error:", error);
+
+//       alert(
+//         error?.response?.data?.message ||
+//         "Upload failed"
+//       );
 
 //     }
 
 //   };
-
-//   /* ---------------- ASSETS ---------------- */
 
 //   const assets = [
 //     {
@@ -1521,7 +200,7 @@
 
 //   return (
 //     <>
-//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-[#020817] text-white space-y-6">
+//       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-white dark:bg-[#020817] text-slate-900 dark:text-white space-y-6">
 
 //         {/* HEADER */}
 
@@ -1539,7 +218,7 @@
 //             <select
 //               value={selectedClient}
 //               onChange={(e) => setSelectedClient(e.target.value)}
-//               className="px-3 py-2 rounded-lg border border-white/10 text-sm bg-[#0b1220]"
+//               className="px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 text-sm bg-white dark:bg-[#0b1220]"
 //             >
 //               <option value="">Select Client</option>
 
@@ -1559,7 +238,7 @@
 //               Schedule Post
 //             </button>
 
-//             <label className="cursor-pointer px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm">
+//             <label className="cursor-pointer px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg text-sm">
 //               Upload Calendar
 //               <input
 //                 type="file"
@@ -1579,7 +258,8 @@
 
 //           {/* CALENDAR */}
 
-//           <div className="relative overflow-visible rounded-xl border border-white/10 bg-[#0b1220] p-6">
+//           <div className="relative overflow-visible rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
+
 //             <h3 className="font-semibold mb-6">
 //               Content Calendar —{" "}
 //               {today.toLocaleString("default", { month: "long" })} {year}
@@ -1590,8 +270,6 @@
 //                 <div key={d}>{d}</div>
 //               ))}
 //             </div>
-
-
 
 //             <div className="grid grid-cols-7 gap-2 text-sm">
 
@@ -1604,31 +282,26 @@
 //                 return (
 //                   <div
 //                     key={i}
-//                     className="relative group h-12 flex items-center justify-center rounded-md hover:bg-slate-800"
+//                     className="relative group h-12 flex items-center justify-center rounded-md hover:bg-slate-200 dark:hover:bg-slate-800"
 //                   >
 
 //                     {day}
 
 //                     {dayPosts.length > 0 && (
 //                       <>
-
-//                         {/* SINGLE INDICATOR WITH COUNT */}
-
 //                         <div className="absolute bottom-1 flex items-center gap-1 
-//             bg-indigo-600/20 text-indigo-400 text-[10px] 
-//             px-1.5 py-[2px] rounded-full">
+//                         bg-indigo-600/20 text-indigo-400 text-[10px] 
+//                         px-1.5 py-[2px] rounded-full">
 
 //                           <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
 //                           {dayPosts.length}
 
 //                         </div>
 
-//                         {/* TOOLTIP */}
-
 //                         <div className="absolute hidden group-hover:block 
-//             left-full ml-2 top-1/2 -translate-y-1/2
-//             w-56 bg-[#0b1220] border border-white/10 shadow-lg 
-//             rounded-lg p-3 z-[9999] pointer-events-none">
+//                         left-full ml-2 top-1/2 -translate-y-1/2
+//                         w-56 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 shadow-lg 
+//                         rounded-lg p-3 z-[9999] pointer-events-none">
 
 //                           {dayPosts.map((post, index) => (
 //                             <div key={index} className="mb-2 last:mb-0">
@@ -1664,7 +337,7 @@
 
 //           {/* POSTS */}
 
-//           <div className="rounded-xl border border-white/10 bg-[#0b1220] p-6">
+//           <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
 
 //             <h3 className="font-semibold mb-4">
 //               Scheduled Posts This Week
@@ -1674,7 +347,7 @@
 
 //               {displayPosts.map((post, i) => (
 
-//                 <div key={i} className="flex justify-between p-3 border border-white/10 rounded-lg">
+//                 <div key={i} className="flex justify-between p-3 border border-slate-200 dark:border-white/10 rounded-lg">
 
 //                   <div>
 //                     <p className="font-medium text-sm">
@@ -1706,7 +379,7 @@
 
 //         {/* ASSET LIBRARY */}
 
-//         <div className="rounded-xl border border-white/10 bg-[#0b1220] p-6">
+//         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
 
 //           <h3 className="font-semibold mb-6">Asset Library</h3>
 
@@ -1714,7 +387,7 @@
 
 //             {assets.map((asset, i) => (
 
-//               <div key={i} className="rounded-lg border border-white/10 p-3">
+//               <div key={i} className="rounded-lg border border-slate-200 dark:border-white/10 p-3">
 
 //                 <div className={`h-20 flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color}`}>
 //                   {asset.icon}
@@ -1727,7 +400,7 @@
 
 //             ))}
 
-//             <div className="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3">
+//             <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3">
 
 //               <Plus size={18} />
 //               <p className="text-xs mt-1">Upload Asset</p>
@@ -1753,19 +426,142 @@
 
 "use client";
 
-import { Plus } from "lucide-react";
-import { useState } from "react";
+import {
+  Plus,
+  Plug,
+  Unplug,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Loader2,
+  AlertTriangle,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+} from "lucide-react";
+import { useState, useCallback } from "react";
 import SchedulePostModal from "@/components/SchedulePostModal";
 import { useGet } from "@/hooks/useGet";
+import { usePost } from "@/hooks/usePost";
 import { apiClient } from "@/lib/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function ContentBrandPage() {
+/* ── Platform Config ── */
+const PLATFORMS = [
+  {
+    key: "facebook",
+    label: "Facebook",
+    icon: Facebook,
+    color: "bg-blue-600",
+    hoverColor: "hover:bg-blue-700",
+    lightBg: "bg-blue-500/10",
+    textColor: "text-blue-400",
+  },
+  {
+    key: "instagram",
+    label: "Instagram",
+    icon: Instagram,
+    color: "bg-gradient-to-r from-purple-600 to-pink-500",
+    hoverColor: "hover:opacity-90",
+    lightBg: "bg-pink-500/10",
+    textColor: "text-pink-400",
+  },
+  {
+    key: "linkedin",
+    label: "LinkedIn",
+    icon: Linkedin,
+    color: "bg-sky-700",
+    hoverColor: "hover:bg-sky-800",
+    lightBg: "bg-sky-500/10",
+    textColor: "text-sky-400",
+  },
+  {
+    key: "twitter",
+    label: "Twitter / X",
+    icon: Twitter,
+    color: "bg-slate-800",
+    hoverColor: "hover:bg-slate-900",
+    lightBg: "bg-slate-500/10",
+    textColor: "text-slate-300",
+  },
+];
 
+/* ── Publish Status Badge ── */
+function StatusBadge({ status }) {
+  const config = {
+    draft: {
+      icon: Clock,
+      bg: "bg-slate-500/20",
+      text: "text-slate-400",
+      label: "Draft",
+    },
+    scheduled: {
+      icon: Clock,
+      bg: "bg-amber-500/20",
+      text: "text-amber-400",
+      label: "Scheduled",
+    },
+    queued: {
+      icon: Loader2,
+      bg: "bg-blue-500/20",
+      text: "text-blue-400",
+      label: "Queued",
+    },
+    publishing: {
+      icon: Loader2,
+      bg: "bg-indigo-500/20",
+      text: "text-indigo-400",
+      label: "Publishing…",
+    },
+    published: {
+      icon: CheckCircle2,
+      bg: "bg-emerald-500/20",
+      text: "text-emerald-400",
+      label: "Published",
+    },
+    failed: {
+      icon: XCircle,
+      bg: "bg-red-500/20",
+      text: "text-red-400",
+      label: "Failed",
+    },
+    cancelled: {
+      icon: XCircle,
+      bg: "bg-slate-500/20",
+      text: "text-slate-400",
+      label: "Cancelled",
+    },
+  };
+
+  const c = config[status] || config.draft;
+  const Icon = c.icon;
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${c.bg} ${c.text}`}
+    >
+      <Icon
+        size={12}
+        className={
+          status === "publishing" || status === "queued" ? "animate-spin" : ""
+        }
+      />
+      {c.label}
+    </span>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   MAIN PAGE COMPONENT
+   ═══════════════════════════════════════════ */
+export default function ContentBrandPage() {
   const queryClient = useQueryClient();
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState("");
+  const [connectingPlatform, setConnectingPlatform] = useState(null);
 
   const today = new Date();
   const year = today.getFullYear();
@@ -1779,22 +575,154 @@ export default function ContentBrandPage() {
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
+  /* ── API Queries ── */
+
   const { data: clientsData } = useGet(
     "clients",
     "http://localhost:5000/api/clients"
   );
-
   const clients = clientsData?.clients || [];
 
+  // Social connection status per client
+  const { data: socialStatus, isLoading: statusLoading } = useGet(
+    ["socialStatus", selectedClient],
+    `http://localhost:5000/api/social-auth/status/${selectedClient}`,
+    { enabled: !!selectedClient }
+  );
+  const connectedPlatforms = socialStatus?.data || {};
+
+  // Calendar posts (now using /api/publish/calendar)
   const { data: calendarData } = useGet(
     ["calendarPosts", selectedClient],
-    `http://localhost:5000/api/content/calendar-posts?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
-    {
-      enabled: !!selectedClient,
-    }
+    `http://localhost:5000/api/publish/calendar?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
+    { enabled: !!selectedClient }
+  );
+  const calendarPosts = calendarData?.data || [];
+
+  // Publishing stats per client
+  const { data: statsData } = useGet(
+    ["publishStats", selectedClient],
+    `http://localhost:5000/api/publish/stats/${selectedClient}`,
+    { enabled: !!selectedClient }
+  );
+  const publishStats = statsData?.data || {};
+
+  // Disconnect mutation
+  const { mutateAsync: disconnectAccount, isPending: isDisconnecting } =
+    usePost("http://localhost:5000/api/social-auth/disconnect", {
+      invalidateKeys: [["socialStatus", selectedClient]],
+      method: "DELETE",
+    });
+
+  // Retry mutation
+  const { mutateAsync: retryPost, isPending: isRetrying } = usePost(
+    "", // dynamic URL
+    { invalidateKeys: [["calendarPosts", selectedClient]] }
   );
 
-  const calendarPosts = calendarData?.data || [];
+  /* ── Handlers ── */
+
+  const handleConnect = useCallback(
+    async (platform) => {
+      if (!selectedClient) {
+        alert("Please select a client first");
+        return;
+      }
+
+      setConnectingPlatform(platform);
+
+      try {
+        const res = await apiClient.get(
+          `http://localhost:5000/api/social-auth/connect`,
+          { params: { clientId: selectedClient, platform } }
+        );
+
+        if (res.data?.authUrl) {
+          // Redirect to OAuth page
+          window.location.href = res.data.authUrl;
+        }
+      } catch (err) {
+        console.error("Connect error:", err);
+        alert(err?.response?.data?.error || "Failed to connect");
+      } finally {
+        setConnectingPlatform(null);
+      }
+    },
+    [selectedClient]
+  );
+
+  const handleDisconnect = useCallback(
+    async (platform) => {
+      if (!confirm(`Disconnect ${platform}? Scheduled posts won't publish.`))
+        return;
+
+      try {
+        await disconnectAccount({
+          clientId: selectedClient,
+          platform,
+        });
+      } catch (err) {
+        alert(err?.response?.data?.error || "Disconnect failed");
+      }
+    },
+    [selectedClient, disconnectAccount]
+  );
+
+  const handleRetry = useCallback(
+    async (postId) => {
+      try {
+        await apiClient.post(
+          `http://localhost:5000/api/publish/${postId}/retry`
+        );
+        queryClient.invalidateQueries(["calendarPosts", selectedClient]);
+      } catch (err) {
+        alert(err?.response?.data?.error || "Retry failed");
+      }
+    },
+    [selectedClient, queryClient]
+  );
+
+  const handleCalendarUpload = async (e) => {
+    if (!selectedClient) {
+      alert("Please select client first");
+      return;
+    }
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = [".xlsx", ".csv"];
+    const isValid = validTypes.some((type) =>
+      file.name.toLowerCase().endsWith(type)
+    );
+
+    if (!isValid) {
+      alert("Only Excel (.xlsx) or CSV files allowed");
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("clientId", selectedClient);
+
+      await apiClient.post(
+        "http://localhost:5000/api/content/upload-calendar",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      alert("Calendar uploaded successfully");
+      queryClient.invalidateQueries(["calendarPosts", selectedClient]);
+      e.target.value = "";
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert(error?.response?.data?.message || "Upload failed");
+    }
+  };
+
+  /* ── Dummy data (when no client selected) ── */
 
   const dummyPosts = [
     {
@@ -1815,120 +743,6 @@ export default function ContentBrandPage() {
   ];
 
   const displayPosts = calendarPosts.length ? calendarPosts : dummyPosts;
-
-  // const handleCalendarUpload = async (e) => {
-
-  //   if (!selectedClient) {
-  //     alert("Please select client first");
-  //     return;
-  //   }
-
-  //   const file = e.target.files[0];
-
-  //   if (!file) {
-  //     alert("Please select file");
-  //     return;
-  //   }
-
-  //   if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".csv")) {
-  //     alert("Only Excel or CSV allowed");
-  //     return;
-  //   }
-
-  //   try {
-
-  //     const formData = new FormData();
-
-  //     formData.append("file", file);
-  //     formData.append("clientId", selectedClient);
-
-  //     await apiClient.post(
-  //       "http://localhost:5000/api/content/upload-calendar",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     alert("Calendar uploaded successfully");
-
-  //     queryClient.invalidateQueries(["calendarPosts", selectedClient]);
-
-  //   } catch (error) {
-
-  //     console.error(error);
-  //     alert("Upload failed");
-
-  //   }
-
-  // };
-
-
-  const handleCalendarUpload = async (e) => {
-
-    if (!selectedClient) {
-      alert("Please select client first");
-      return;
-    }
-
-    const file = e.target.files[0];
-
-    if (!file) {
-      alert("Please select file");
-      return;
-    }
-
-    const validTypes = [".xlsx", ".csv"];
-
-    const isValid = validTypes.some(type => file.name.toLowerCase().endsWith(type));
-
-    if (!isValid) {
-      alert("Only Excel (.xlsx) or CSV files allowed");
-      e.target.value = "";
-      return;
-    }
-
-    try {
-
-      const formData = new FormData();
-
-      formData.append("file", file);
-      formData.append("clientId", selectedClient);
-
-      await apiClient.post(
-        "http://localhost:5000/api/content/upload-calendar",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      alert("Calendar uploaded successfully");
-
-      /* Refresh calendar */
-
-      queryClient.invalidateQueries(["calendarPosts", selectedClient]);
-
-      /* Reset file input so same file can upload again */
-
-      e.target.value = "";
-
-    } catch (error) {
-
-      console.error("Upload error:", error);
-
-      alert(
-        error?.response?.data?.message ||
-        "Upload failed"
-      );
-
-    }
-
-  };
 
   const assets = [
     {
@@ -1951,14 +765,14 @@ export default function ContentBrandPage() {
     },
   ];
 
+  /* ═══════════════════════════════════════
+     RENDER
+     ═══════════════════════════════════════ */
   return (
     <>
       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-white dark:bg-[#020817] text-slate-900 dark:text-white space-y-6">
-
-        {/* HEADER */}
-
+        {/* ── HEADER ── */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
           <div>
             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
             <p className="text-xs md:text-sm text-slate-400">
@@ -1967,20 +781,17 @@ export default function ContentBrandPage() {
           </div>
 
           <div className="flex gap-2 flex-wrap">
-
             <select
               value={selectedClient}
               onChange={(e) => setSelectedClient(e.target.value)}
               className="px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 text-sm bg-white dark:bg-[#0b1220]"
             >
               <option value="">Select Client</option>
-
               {clients.map((client) => (
                 <option key={client._id} value={client._id}>
                   {client.profile?.companyName}
                 </option>
               ))}
-
             </select>
 
             <button
@@ -2000,19 +811,146 @@ export default function ContentBrandPage() {
                 className="hidden"
               />
             </label>
-
           </div>
-
         </div>
 
-        {/* CALENDAR + POSTS */}
+        {/* ── SOCIAL MEDIA CONNECTIONS ── */}
+        {selectedClient && (
+          <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-semibold">Social Media Accounts</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Connect platforms to enable auto-publishing
+                </p>
+              </div>
 
+              {statusLoading && (
+                <Loader2 size={16} className="animate-spin text-slate-400" />
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {PLATFORMS.map((p) => {
+                const status = connectedPlatforms[p.key];
+                const isConnected = status?.connected;
+                const Icon = p.icon;
+
+                return (
+                  <div
+                    key={p.key}
+                    className={`relative rounded-lg border p-4 transition-all ${
+                      isConnected
+                        ? "border-emerald-500/30 bg-emerald-500/5"
+                        : "border-slate-200 dark:border-white/10"
+                    }`}
+                  >
+                    {/* Platform header */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                          isConnected ? p.lightBg : "bg-slate-100 dark:bg-white/5"
+                        }`}
+                      >
+                        <Icon
+                          size={18}
+                          className={
+                            isConnected ? p.textColor : "text-slate-400"
+                          }
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">{p.label}</p>
+                        {isConnected && status.userName && (
+                          <p className="text-xs text-slate-400 truncate">
+                            @{status.userName}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Status + Error */}
+                    {isConnected && status.lastError && (
+                      <div className="flex items-start gap-1.5 mb-3 p-2 rounded bg-red-500/10 text-red-400 text-xs">
+                        <AlertTriangle size={12} className="mt-0.5 shrink-0" />
+                        <span className="line-clamp-2">{status.lastError}</span>
+                      </div>
+                    )}
+
+                    {/* Connect / Disconnect button */}
+                    {isConnected ? (
+                      <button
+                        onClick={() => handleDisconnect(p.key)}
+                        disabled={isDisconnecting}
+                        className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-500/20 text-red-400 text-xs hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                      >
+                        <Unplug size={13} />
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleConnect(p.key)}
+                        disabled={connectingPlatform === p.key}
+                        className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-white text-xs transition-all disabled:opacity-50 ${p.color} ${p.hoverColor}`}
+                      >
+                        {connectingPlatform === p.key ? (
+                          <Loader2 size={13} className="animate-spin" />
+                        ) : (
+                          <Plug size={13} />
+                        )}
+                        Connect {p.label}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── QUICK STATS (when client selected) ── */}
+        {selectedClient && publishStats.totalPosts > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              {
+                label: "Total Posts",
+                value: publishStats.totalPosts || 0,
+                color: "text-indigo-400",
+              },
+              {
+                label: "Published",
+                value: publishStats.byStatus?.published || 0,
+                color: "text-emerald-400",
+              },
+              {
+                label: "Scheduled",
+                value: publishStats.byStatus?.scheduled || 0,
+                color: "text-amber-400",
+              },
+              {
+                label: "Failed",
+                value: publishStats.byStatus?.failed || 0,
+                color: "text-red-400",
+              },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-4"
+              >
+                <p className="text-xs text-slate-400">{stat.label}</p>
+                <p className={`text-2xl font-bold mt-1 ${stat.color}`}>
+                  {stat.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── CALENDAR + POSTS ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
           {/* CALENDAR */}
-
           <div className="relative overflow-visible rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
-
             <h3 className="font-semibold mb-6">
               Content Calendar —{" "}
               {today.toLocaleString("default", { month: "long" })} {year}
@@ -2025,11 +963,10 @@ export default function ContentBrandPage() {
             </div>
 
             <div className="grid grid-cols-7 gap-2 text-sm">
-
               {calendarDays.map((day, i) => {
-
                 const dayPosts = calendarPosts.filter(
-                  post => new Date(post.scheduleDate).getDate() === Number(day)
+                  (post) =>
+                    new Date(post.scheduleDate).getDate() === Number(day)
                 );
 
                 return (
@@ -2037,133 +974,131 @@ export default function ContentBrandPage() {
                     key={i}
                     className="relative group h-12 flex items-center justify-center rounded-md hover:bg-slate-200 dark:hover:bg-slate-800"
                   >
-
                     {day}
 
                     {dayPosts.length > 0 && (
                       <>
-                        <div className="absolute bottom-1 flex items-center gap-1 
-                        bg-indigo-600/20 text-indigo-400 text-[10px] 
-                        px-1.5 py-[2px] rounded-full">
-
+                        <div className="absolute bottom-1 flex items-center gap-1 bg-indigo-600/20 text-indigo-400 text-[10px] px-1.5 py-[2px] rounded-full">
                           <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
                           {dayPosts.length}
-
                         </div>
 
-                        <div className="absolute hidden group-hover:block 
-                        left-full ml-2 top-1/2 -translate-y-1/2
-                        w-56 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 shadow-lg 
-                        rounded-lg p-3 z-[9999] pointer-events-none">
-
+                        <div className="absolute hidden group-hover:block left-full ml-2 top-1/2 -translate-y-1/2 w-60 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 shadow-lg rounded-lg p-3 z-[9999] pointer-events-none">
                           {dayPosts.map((post, index) => (
                             <div key={index} className="mb-2 last:mb-0">
-
-                              <p className="font-medium text-sm">
-                                {post.platform}
+                              <div className="flex items-center justify-between">
+                                <p className="font-medium text-sm">
+                                  {post.platform}
+                                </p>
+                                <StatusBadge status={post.publishStatus} />
+                              </div>
+                              <p className="text-xs text-slate-400 mt-0.5">
+                                {post.topic || post.caption?.slice(0, 60)}
                               </p>
-
-                              <p className="text-xs text-slate-400">
-                                {post.topic}
-                              </p>
-
-                              <p className="text-xs text-slate-400">
-                                {post.asset}
-                              </p>
-
+                              {post.asset && (
+                                <p className="text-xs text-slate-500">
+                                  {post.asset}
+                                </p>
+                              )}
                             </div>
                           ))}
-
                         </div>
-
                       </>
                     )}
-
                   </div>
                 );
-
               })}
-
             </div>
-
           </div>
 
-          {/* POSTS */}
-
+          {/* POSTS LIST */}
           <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
-
-            <h3 className="font-semibold mb-4">
-              Scheduled Posts This Week
-            </h3>
+            <h3 className="font-semibold mb-4">Scheduled Posts This Week</h3>
 
             <div className="space-y-3">
-
               {displayPosts.map((post, i) => (
-
-                <div key={i} className="flex justify-between p-3 border border-slate-200 dark:border-white/10 rounded-lg">
-
-                  <div>
-                    <p className="font-medium text-sm">
-                      {post.platform || post.title}
-                    </p>
-
-                    <p className="text-xs text-slate-400">
+                <div
+                  key={post._id || i}
+                  className="flex items-start justify-between gap-3 p-3 border border-slate-200 dark:border-white/10 rounded-lg"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-sm">
+                        {post.platform || post.title}
+                      </p>
+                      {post.publishStatus && (
+                        <StatusBadge status={post.publishStatus} />
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
                       {post.caption || post.desc}
                     </p>
+
+                    {/* Retry button for failed posts */}
+                    {post.publishStatus === "failed" && (
+                      <button
+                        onClick={() => handleRetry(post._id)}
+                        className="mt-2 inline-flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                      >
+                        <RefreshCw size={12} />
+                        Retry now
+                      </button>
+                    )}
+
+                    {/* Show last error on failed */}
+                    {post.publishStatus === "failed" && post.lastError && (
+                      <p className="mt-1 text-xs text-red-400/80 line-clamp-1">
+                        {post.lastError}
+                      </p>
+                    )}
                   </div>
 
-                  <span className="text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400">
-
+                  <span className="shrink-0 text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400 whitespace-nowrap">
                     {post.scheduleDate
-                      ? new Date(post.scheduleDate).toLocaleDateString()
+                      ? new Date(post.scheduleDate).toLocaleDateString(
+                          "en-IN",
+                          { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }
+                        )
                       : post.time}
-
                   </span>
-
                 </div>
-
               ))}
 
+              {displayPosts.length === 0 && selectedClient && (
+                <p className="text-center text-sm text-slate-400 py-6">
+                  No scheduled posts for this month
+                </p>
+              )}
             </div>
-
           </div>
-
         </div>
 
-        {/* ASSET LIBRARY */}
-
+        {/* ── ASSET LIBRARY ── */}
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
-
           <h3 className="font-semibold mb-6">Asset Library</h3>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
             {assets.map((asset, i) => (
-
-              <div key={i} className="rounded-lg border border-slate-200 dark:border-white/10 p-3">
-
-                <div className={`h-20 flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color}`}>
+              <div
+                key={i}
+                className="rounded-lg border border-slate-200 dark:border-white/10 p-3"
+              >
+                <div
+                  className={`h-20 flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color} rounded`}
+                >
                   {asset.icon}
                 </div>
-
                 <p className="text-sm mt-2 font-medium">{asset.name}</p>
                 <p className="text-xs text-slate-400">{asset.size}</p>
-
               </div>
-
             ))}
 
-            <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3">
-
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3 cursor-pointer transition-colors">
               <Plus size={18} />
               <p className="text-xs mt-1">Upload Asset</p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       <SchedulePostModal
@@ -2171,7 +1106,6 @@ export default function ContentBrandPage() {
         onClose={() => setOpenModal(false)}
         clients={clients}
       />
-
     </>
   );
 }

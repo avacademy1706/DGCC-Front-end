@@ -2068,7 +2068,7 @@ export default function LeadManagement() {
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   const { data: metaData, isLoading: metaLoading, isError: metaError, refetch: refetchMeta, isFetching: metaFetching } =
-    useGet<LeadsResponse>("meta-leads", "/leads");
+    useGet<LeadsResponse>("meta-leads", "/meta/leads");
   const { data: jdData, isLoading: jdLoading, isError: jdError, refetch: refetchJD, isFetching: jdFetching } =
     useGet<JDResponse>("jd-leads", "/justdial");
   const { data: clientsData } =
