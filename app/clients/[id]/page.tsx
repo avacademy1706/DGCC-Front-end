@@ -415,11 +415,11 @@ export default function ClientDetailsPage() {
         const { data, isLoading } = useGet("clients", `/clients/${id}`);
 
 
-useEffect(()=>{
-  if(data?.client){
-    setClient(data.client)  // ← backend response mein "client" key hai, "data" nahi
-  }
-}, [data])  
+// useEffect(()=>{
+//   if(data?.client){
+//     setClient(data.client)  // ← backend response mein "client" key hai, "data" nahi
+//   }
+// }, [data])  
 
   if (isLoading) return <PageSkeleton />;
 

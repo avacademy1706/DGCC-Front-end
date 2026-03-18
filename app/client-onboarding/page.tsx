@@ -1449,7 +1449,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
@@ -1484,7 +1484,13 @@ const inp = "w-full mt-1 px-3 py-2 rounded-md border bg-gray-50 dark:bg-slate-90
 // ═══════════════════════════════════════════════════════════════════════════════
 // STEP COMPONENTS
 // ═══════════════════════════════════════════════════════════════════════════════
-function Step1Profile({ data, set }: any) {
+
+interface StepProps {
+  data: Record<string, any>;
+  set: (key: string, value: any) => void;
+}
+
+function Step1Profile({ data, set }: StepProps) {
   return (
     <div>
       <h2 className="font-semibold text-lg mb-6">Step 1: Client Profile Creation</h2>
@@ -1529,10 +1535,10 @@ function Step1Profile({ data, set }: any) {
   );
 }
 
-function Step2Goals({ data, set }: any) {
+function Step2Goals({ data, set }: StepProps) {
   const goals = ["Brand Awareness","Lead Generation","Sales Conversion","Retention","App Installs","Website Traffic"];
   const toggle = (g: string) => {
-    const cur = data.primaryGoals || [];
+    const cur: string[] = data.primaryGoals || [];
     set("primaryGoals", cur.includes(g) ? cur.filter((x: string) => x !== g) : [...cur, g]);
   };
   return (
@@ -1567,10 +1573,10 @@ function Step2Goals({ data, set }: any) {
   );
 }
 
-function Step3Channels({ data, set }: any) {
+function Step3Channels({ data, set }: StepProps) {
   const channels = ["Google Ads","Meta Ads","LinkedIn Ads","YouTube","SEO","Email","WhatsApp","Programmatic"];
   const toggle = (c: string) => {
-    const cur = data.channels || [];
+    const cur: string[] = data.channels || [];
     set("channels", cur.includes(c) ? cur.filter((x: string) => x !== c) : [...cur, c]);
   };
   return (
@@ -1606,7 +1612,7 @@ function Step3Channels({ data, set }: any) {
   );
 }
 
-function Step4KPIs({ data, set }: any) {
+function Step4KPIs({ data, set }: StepProps) {
   return (
     <div>
       <h2 className="font-semibold text-lg mb-6">Step 4: KPI Definition</h2>
@@ -1636,8 +1642,8 @@ function Step4KPIs({ data, set }: any) {
   );
 }
 
-function Step5Stakeholders({ data, set }: any) {
-  const stakeholders = data.stakeholders || [{ name: "", email: "", role: "" }];
+function Step5Stakeholders({ data, set }: StepProps) {
+  const stakeholders: Array<{ name: string; email: string; role: string }> = data.stakeholders || [{ name: "", email: "", role: "" }];
   const update = (i: number, field: string, value: string) => {
     const updated = [...stakeholders];
     updated[i] = { ...updated[i], [field]: value };
@@ -1647,7 +1653,7 @@ function Step5Stakeholders({ data, set }: any) {
     <div>
       <h2 className="font-semibold text-lg mb-6">Step 5: Stakeholder Mapping</h2>
       <div className="space-y-4">
-        {stakeholders.map((s: any, i: number) => (
+        {stakeholders.map((s, i) => (
           <div key={i} className="grid grid-cols-3 gap-4 items-end">
             <div>
               <label className="text-sm text-gray-500 dark:text-slate-400">Name</label>
@@ -1666,7 +1672,7 @@ function Step5Stakeholders({ data, set }: any) {
                 </select>
               </div>
               {i > 0 && (
-                <button onClick={() => set("stakeholders", stakeholders.filter((_: any, idx: number) => idx !== i))}
+                <button onClick={() => set("stakeholders", stakeholders.filter((_, idx) => idx !== i))}
                   className="mt-6 px-3 py-2 rounded-md border border-red-300 dark:border-red-800 text-red-500 text-sm hover:bg-red-50 dark:hover:bg-red-900/20">✕</button>
               )}
             </div>
@@ -1686,9 +1692,9 @@ function Step5Stakeholders({ data, set }: any) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MAIN WIZARD
+// MAIN WIZARD (uses useSearchParams — must be inside Suspense)
 // ═══════════════════════════════════════════════════════════════════════════════
-export default function ClientOnboardingWizard() {
+function ClientOnboardingWizard() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const editId       = searchParams.get("edit");
@@ -1706,7 +1712,6 @@ export default function ClientOnboardingWizard() {
   // ─── React Query Hooks ─────────────────────────────────────────────────────
   const startMutation = usePost("/clients/start", "clients");
 
-  // Dynamic URL — clientId se banenge (clientId set hone ke baad use honge)
   const step1Mutation = usePut(`/clients/${clientId}/step/1`, "clients");
   const step2Mutation = usePut(`/clients/${clientId}/step/2`, "clients");
   const step3Mutation = usePut(`/clients/${clientId}/step/3`, "clients");
@@ -1751,7 +1756,7 @@ export default function ClientOnboardingWizard() {
           leadTarget:     c.kpis?.leadTarget        || "",
           reportingFreq:  c.kpis?.reportingFreq     || "",
           stakeholders:   c.stakeholders?.length
-            ? c.stakeholders.map((s: any) => ({ name: s.name || "", email: s.email || "", role: s.role || "" }))
+            ? c.stakeholders.map((s: { name?: string; email?: string; role?: string }) => ({ name: s.name || "", email: s.email || "", role: s.role || "" }))
             : [{ name: "", email: "", role: "" }],
         });
       } catch {
@@ -1789,12 +1794,10 @@ export default function ClientOnboardingWizard() {
     try {
       if (isEditMode) {
         if (step < 5) { setStep(s => s + 1); return; }
-        // Step 5 → save all
         await editMutation.mutateAsync(getFullPayload());
         toast.success("Client update ho gaya! ✓");
         setCompleted(true);
       } else {
-        // Create mode
         if (!clientIdRef.current) {
           const res = await startMutation.mutateAsync({});
           clientIdRef.current = res.clientId;
@@ -1804,8 +1807,9 @@ export default function ClientOnboardingWizard() {
         if (step === 5) setCompleted(true);
         else            setStep(s => s + 1);
       }
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || err?.message || "Save nahi hua");
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+      toast.error(axiosErr?.response?.data?.message || axiosErr?.message || "Save nahi hua");
     }
   };
 
@@ -1952,7 +1956,7 @@ export default function ClientOnboardingWizard() {
               </button>
             ) : (
               <span className="text-xs text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-500/10 px-3 py-2 rounded-md border border-amber-200 dark:border-amber-500/30">
-                ✏️ Edit Mode — Step 5 pe "Save Changes" dabao
+                ✏️ Edit Mode — Step 5 pe &ldquo;Save Changes&rdquo; dabao
               </span>
             )}
 
@@ -2031,12 +2035,32 @@ export default function ClientOnboardingWizard() {
             <div className="rounded-2xl border p-5 border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10">
               <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2">✏️ Edit Mode Active</p>
               <p className="text-xs text-amber-600 dark:text-amber-500 leading-relaxed">
-                Sari values pehle se fill hain. Kisi bhi step pe click karke directly ja sakte ho. Sab changes Step 5 pe "Save Changes" dabane pe ek saath save honge.
+                Sari values pehle se fill hain. Kisi bhi step pe click karke directly ja sakte ho. Sab changes Step 5 pe &ldquo;Save Changes&rdquo; dabane pe ek saath save honge.
               </p>
             </div>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DEFAULT EXPORT — Suspense boundary (Next.js 16 requirement)
+// ═══════════════════════════════════════════════════════════════════════════════
+export default function ClientOnboardingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-[#020817] flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 size={36} className="animate-spin text-indigo-500 mx-auto mb-4" />
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <ClientOnboardingWizard />
+    </Suspense>
   );
 }

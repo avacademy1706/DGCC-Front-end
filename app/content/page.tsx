@@ -423,7 +423,6 @@
 //   );
 // }
 
-
 "use client";
 
 import {
@@ -444,12 +443,62 @@ import {
 import { useState, useCallback } from "react";
 import SchedulePostModal from "@/components/SchedulePostModal";
 import { useGet } from "@/hooks/useGet";
-import { usePost } from "@/hooks/usePost";
 import { apiClient } from "@/lib/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
 
+/* ── Types ── */
+interface Client {
+  _id: string;
+  profile?: { companyName: string };
+}
+
+interface CalendarPost {
+  _id?: string;
+  platform: string;
+  caption?: string;
+  topic?: string;
+  asset?: string;
+  scheduleDate: string;
+  publishStatus?: string;
+  lastError?: string;
+}
+
+interface DummyPost {
+  title: string;
+  desc: string;
+  time: string;
+}
+
+interface PlatformStatus {
+  connected: boolean;
+  status: string;
+  userName?: string;
+  pageId?: string;
+  tokenExpires?: string;
+  lastUsed?: string;
+  lastError?: string;
+  connectedAt?: string;
+}
+
+interface PublishStats {
+  totalPosts?: number;
+  byStatus?: Record<string, number>;
+  byPlatform?: Record<string, number>;
+  recentFailed?: unknown[];
+}
+
+interface PlatformConfig {
+  key: string;
+  label: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  color: string;
+  hoverColor: string;
+  lightBg: string;
+  textColor: string;
+}
+
 /* ── Platform Config ── */
-const PLATFORMS = [
+const PLATFORMS: PlatformConfig[] = [
   {
     key: "facebook",
     label: "Facebook",
@@ -489,64 +538,33 @@ const PLATFORMS = [
 ];
 
 /* ── Publish Status Badge ── */
-function StatusBadge({ status }) {
-  const config = {
-    draft: {
-      icon: Clock,
-      bg: "bg-slate-500/20",
-      text: "text-slate-400",
-      label: "Draft",
-    },
-    scheduled: {
-      icon: Clock,
-      bg: "bg-amber-500/20",
-      text: "text-amber-400",
-      label: "Scheduled",
-    },
-    queued: {
-      icon: Loader2,
-      bg: "bg-blue-500/20",
-      text: "text-blue-400",
-      label: "Queued",
-    },
-    publishing: {
-      icon: Loader2,
-      bg: "bg-indigo-500/20",
-      text: "text-indigo-400",
-      label: "Publishing…",
-    },
-    published: {
-      icon: CheckCircle2,
-      bg: "bg-emerald-500/20",
-      text: "text-emerald-400",
-      label: "Published",
-    },
-    failed: {
-      icon: XCircle,
-      bg: "bg-red-500/20",
-      text: "text-red-400",
-      label: "Failed",
-    },
-    cancelled: {
-      icon: XCircle,
-      bg: "bg-slate-500/20",
-      text: "text-slate-400",
-      label: "Cancelled",
-    },
+function StatusBadge({ status }: { status: string }) {
+  const config: Record<
+    string,
+    {
+      icon: React.ComponentType<{ size?: number; className?: string }>;
+      bg: string;
+      text: string;
+      label: string;
+    }
+  > = {
+    draft: { icon: Clock, bg: "bg-slate-500/20", text: "text-slate-400", label: "Draft" },
+    scheduled: { icon: Clock, bg: "bg-amber-500/20", text: "text-amber-400", label: "Scheduled" },
+    queued: { icon: Loader2, bg: "bg-blue-500/20", text: "text-blue-400", label: "Queued" },
+    publishing: { icon: Loader2, bg: "bg-indigo-500/20", text: "text-indigo-400", label: "Publishing…" },
+    published: { icon: CheckCircle2, bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Published" },
+    failed: { icon: XCircle, bg: "bg-red-500/20", text: "text-red-400", label: "Failed" },
+    cancelled: { icon: XCircle, bg: "bg-slate-500/20", text: "text-slate-400", label: "Cancelled" },
   };
 
   const c = config[status] || config.draft;
   const Icon = c.icon;
 
   return (
-    <span
-      className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${c.bg} ${c.text}`}
-    >
+    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${c.bg} ${c.text}`}>
       <Icon
         size={12}
-        className={
-          status === "publishing" || status === "queued" ? "animate-spin" : ""
-        }
+        className={status === "publishing" || status === "queued" ? "animate-spin" : ""}
       />
       {c.label}
     </span>
@@ -561,7 +579,8 @@ export default function ContentBrandPage() {
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState("");
-  const [connectingPlatform, setConnectingPlatform] = useState(null);
+  const [connectingPlatform, setConnectingPlatform] = useState<string | null>(null);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const today = new Date();
   const year = today.getFullYear();
@@ -570,7 +589,7 @@ export default function ContentBrandPage() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const calendarDays = [
+  const calendarDays: (string | number)[] = [
     ...Array(firstDay).fill(""),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
@@ -580,50 +599,34 @@ export default function ContentBrandPage() {
   const { data: clientsData } = useGet(
     "clients",
     "http://localhost:5000/api/clients"
-  );
+  ) as { data: { clients: Client[] } | undefined };
   const clients = clientsData?.clients || [];
 
-  // Social connection status per client
   const { data: socialStatus, isLoading: statusLoading } = useGet(
-    ["socialStatus", selectedClient],
+    `socialStatus-${selectedClient}`,
     `http://localhost:5000/api/social-auth/status/${selectedClient}`,
     { enabled: !!selectedClient }
-  );
+  ) as { data: { data: Record<string, PlatformStatus> } | undefined; isLoading: boolean };
   const connectedPlatforms = socialStatus?.data || {};
 
-  // Calendar posts (now using /api/publish/calendar)
   const { data: calendarData } = useGet(
-    ["calendarPosts", selectedClient],
+    `calendarPosts-${selectedClient}`,
     `http://localhost:5000/api/publish/calendar?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
     { enabled: !!selectedClient }
-  );
-  const calendarPosts = calendarData?.data || [];
+  ) as { data: { data: CalendarPost[] } | undefined };
+  const calendarPosts: CalendarPost[] = calendarData?.data || [];
 
-  // Publishing stats per client
   const { data: statsData } = useGet(
-    ["publishStats", selectedClient],
+    `publishStats-${selectedClient}`,
     `http://localhost:5000/api/publish/stats/${selectedClient}`,
     { enabled: !!selectedClient }
-  );
-  const publishStats = statsData?.data || {};
-
-  // Disconnect mutation
-  const { mutateAsync: disconnectAccount, isPending: isDisconnecting } =
-    usePost("http://localhost:5000/api/social-auth/disconnect", {
-      invalidateKeys: [["socialStatus", selectedClient]],
-      method: "DELETE",
-    });
-
-  // Retry mutation
-  const { mutateAsync: retryPost, isPending: isRetrying } = usePost(
-    "", // dynamic URL
-    { invalidateKeys: [["calendarPosts", selectedClient]] }
-  );
+  ) as { data: { data: PublishStats } | undefined };
+  const publishStats: PublishStats = statsData?.data || {};
 
   /* ── Handlers ── */
 
   const handleConnect = useCallback(
-    async (platform) => {
+    async (platform: string) => {
       if (!selectedClient) {
         alert("Please select a client first");
         return;
@@ -638,12 +641,12 @@ export default function ContentBrandPage() {
         );
 
         if (res.data?.authUrl) {
-          // Redirect to OAuth page
           window.location.href = res.data.authUrl;
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Connect error:", err);
-        alert(err?.response?.data?.error || "Failed to connect");
+        const axiosErr = err as { response?: { data?: { error?: string } } };
+        alert(axiosErr?.response?.data?.error || "Failed to connect");
       } finally {
         setConnectingPlatform(null);
       }
@@ -652,43 +655,49 @@ export default function ContentBrandPage() {
   );
 
   const handleDisconnect = useCallback(
-    async (platform) => {
+    async (platform: string) => {
       if (!confirm(`Disconnect ${platform}? Scheduled posts won't publish.`))
         return;
 
+      setIsDisconnecting(true);
       try {
-        await disconnectAccount({
-          clientId: selectedClient,
-          platform,
-        });
-      } catch (err) {
-        alert(err?.response?.data?.error || "Disconnect failed");
-      }
-    },
-    [selectedClient, disconnectAccount]
-  );
-
-  const handleRetry = useCallback(
-    async (postId) => {
-      try {
-        await apiClient.post(
-          `http://localhost:5000/api/publish/${postId}/retry`
+        await apiClient.delete(
+          "http://localhost:5000/api/social-auth/disconnect",
+          { data: { clientId: selectedClient, platform } }
         );
-        queryClient.invalidateQueries(["calendarPosts", selectedClient]);
-      } catch (err) {
-        alert(err?.response?.data?.error || "Retry failed");
+        queryClient.invalidateQueries({ queryKey: [`socialStatus-${selectedClient}`] });
+      } catch (err: unknown) {
+        const axiosErr = err as { response?: { data?: { error?: string } } };
+        alert(axiosErr?.response?.data?.error || "Disconnect failed");
+      } finally {
+        setIsDisconnecting(false);
       }
     },
     [selectedClient, queryClient]
   );
 
-  const handleCalendarUpload = async (e) => {
+  const handleRetry = useCallback(
+    async (postId: string) => {
+      try {
+        await apiClient.post(
+          `http://localhost:5000/api/publish/${postId}/retry`
+        );
+        queryClient.invalidateQueries({ queryKey: [`calendarPosts-${selectedClient}`] });
+      } catch (err: unknown) {
+        const axiosErr = err as { response?: { data?: { error?: string } } };
+        alert(axiosErr?.response?.data?.error || "Retry failed");
+      }
+    },
+    [selectedClient, queryClient]
+  );
+
+  const handleCalendarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedClient) {
       alert("Please select client first");
       return;
     }
 
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     const validTypes = [".xlsx", ".csv"];
@@ -714,17 +723,18 @@ export default function ContentBrandPage() {
       );
 
       alert("Calendar uploaded successfully");
-      queryClient.invalidateQueries(["calendarPosts", selectedClient]);
+      queryClient.invalidateQueries({ queryKey: [`calendarPosts-${selectedClient}`] });
       e.target.value = "";
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Upload error:", error);
-      alert(error?.response?.data?.message || "Upload failed");
+      const axiosErr = error as { response?: { data?: { message?: string } } };
+      alert(axiosErr?.response?.data?.message || "Upload failed");
     }
   };
 
   /* ── Dummy data (when no client selected) ── */
 
-  const dummyPosts = [
+  const dummyPosts: DummyPost[] = [
     {
       title: "EduTech Pro — Instagram",
       desc: "Admission open post · Creative #14 · 4 hashtags",
@@ -742,7 +752,9 @@ export default function ContentBrandPage() {
     },
   ];
 
-  const displayPosts = calendarPosts.length ? calendarPosts : dummyPosts;
+  const displayPosts: (CalendarPost | DummyPost)[] = calendarPosts.length
+    ? calendarPosts
+    : dummyPosts;
 
   const assets = [
     {
@@ -854,15 +866,13 @@ export default function ContentBrandPage() {
                       >
                         <Icon
                           size={18}
-                          className={
-                            isConnected ? p.textColor : "text-slate-400"
-                          }
+                          className={isConnected ? p.textColor : "text-slate-400"}
                         />
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">{p.label}</p>
-                        {isConnected && status.userName && (
+                        {isConnected && status?.userName && (
                           <p className="text-xs text-slate-400 truncate">
                             @{status.userName}
                           </p>
@@ -871,7 +881,7 @@ export default function ContentBrandPage() {
                     </div>
 
                     {/* Status + Error */}
-                    {isConnected && status.lastError && (
+                    {isConnected && status?.lastError && (
                       <div className="flex items-start gap-1.5 mb-3 p-2 rounded bg-red-500/10 text-red-400 text-xs">
                         <AlertTriangle size={12} className="mt-0.5 shrink-0" />
                         <span className="line-clamp-2">{status.lastError}</span>
@@ -910,29 +920,13 @@ export default function ContentBrandPage() {
         )}
 
         {/* ── QUICK STATS (when client selected) ── */}
-        {selectedClient && publishStats.totalPosts > 0 && (
+        {selectedClient && (publishStats.totalPosts ?? 0) > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              {
-                label: "Total Posts",
-                value: publishStats.totalPosts || 0,
-                color: "text-indigo-400",
-              },
-              {
-                label: "Published",
-                value: publishStats.byStatus?.published || 0,
-                color: "text-emerald-400",
-              },
-              {
-                label: "Scheduled",
-                value: publishStats.byStatus?.scheduled || 0,
-                color: "text-amber-400",
-              },
-              {
-                label: "Failed",
-                value: publishStats.byStatus?.failed || 0,
-                color: "text-red-400",
-              },
+              { label: "Total Posts", value: publishStats.totalPosts || 0, color: "text-indigo-400" },
+              { label: "Published", value: publishStats.byStatus?.published || 0, color: "text-emerald-400" },
+              { label: "Scheduled", value: publishStats.byStatus?.scheduled || 0, color: "text-amber-400" },
+              { label: "Failed", value: publishStats.byStatus?.failed || 0, color: "text-red-400" },
             ].map((stat) => (
               <div
                 key={stat.label}
@@ -990,7 +984,7 @@ export default function ContentBrandPage() {
                                 <p className="font-medium text-sm">
                                   {post.platform}
                                 </p>
-                                <StatusBadge status={post.publishStatus} />
+                                <StatusBadge status={post.publishStatus || "scheduled"} />
                               </div>
                               <p className="text-xs text-slate-400 mt-0.5">
                                 {post.topic || post.caption?.slice(0, 60)}
@@ -1016,53 +1010,63 @@ export default function ContentBrandPage() {
             <h3 className="font-semibold mb-4">Scheduled Posts This Week</h3>
 
             <div className="space-y-3">
-              {displayPosts.map((post, i) => (
-                <div
-                  key={post._id || i}
-                  className="flex items-start justify-between gap-3 p-3 border border-slate-200 dark:border-white/10 rounded-lg"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-sm">
-                        {post.platform || post.title}
+              {displayPosts.map((post, i) => {
+                /* Type guards */
+                const isCalendarPost = "platform" in post;
+                const platform = isCalendarPost ? (post as CalendarPost).platform : (post as DummyPost).title;
+                const caption = isCalendarPost ? (post as CalendarPost).caption : (post as DummyPost).desc;
+                const publishStatus = isCalendarPost ? (post as CalendarPost).publishStatus : undefined;
+                const postId = isCalendarPost ? (post as CalendarPost)._id : undefined;
+                const lastError = isCalendarPost ? (post as CalendarPost).lastError : undefined;
+                const scheduleDate = isCalendarPost ? (post as CalendarPost).scheduleDate : undefined;
+                const time = !isCalendarPost ? (post as DummyPost).time : undefined;
+
+                return (
+                  <div
+                    key={postId || i}
+                    className="flex items-start justify-between gap-3 p-3 border border-slate-200 dark:border-white/10 rounded-lg"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-sm">{platform}</p>
+                        {publishStatus && <StatusBadge status={publishStatus} />}
+                      </div>
+                      <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
+                        {caption}
                       </p>
-                      {post.publishStatus && (
-                        <StatusBadge status={post.publishStatus} />
+
+                      {/* Retry button for failed posts */}
+                      {publishStatus === "failed" && postId && (
+                        <button
+                          onClick={() => handleRetry(postId)}
+                          className="mt-2 inline-flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                        >
+                          <RefreshCw size={12} />
+                          Retry now
+                        </button>
+                      )}
+
+                      {/* Show last error on failed */}
+                      {publishStatus === "failed" && lastError && (
+                        <p className="mt-1 text-xs text-red-400/80 line-clamp-1">
+                          {lastError}
+                        </p>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
-                      {post.caption || post.desc}
-                    </p>
 
-                    {/* Retry button for failed posts */}
-                    {post.publishStatus === "failed" && (
-                      <button
-                        onClick={() => handleRetry(post._id)}
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors"
-                      >
-                        <RefreshCw size={12} />
-                        Retry now
-                      </button>
-                    )}
-
-                    {/* Show last error on failed */}
-                    {post.publishStatus === "failed" && post.lastError && (
-                      <p className="mt-1 text-xs text-red-400/80 line-clamp-1">
-                        {post.lastError}
-                      </p>
-                    )}
+                    <span className="shrink-0 text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400 whitespace-nowrap">
+                      {scheduleDate
+                        ? new Date(scheduleDate).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : time}
+                    </span>
                   </div>
-
-                  <span className="shrink-0 text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400 whitespace-nowrap">
-                    {post.scheduleDate
-                      ? new Date(post.scheduleDate).toLocaleDateString(
-                          "en-IN",
-                          { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }
-                        )
-                      : post.time}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
 
               {displayPosts.length === 0 && selectedClient && (
                 <p className="text-center text-sm text-slate-400 py-6">
