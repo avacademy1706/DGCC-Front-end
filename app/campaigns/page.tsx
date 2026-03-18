@@ -3627,7 +3627,7 @@ export default function CampaignManagement() {
                                 borderRadius: "8px",
                                 fontSize: "11px",
                               }}
-                              formatter={(v: any, n: string | undefined) => [
+                              formatter={(v: any, n: string | number | undefined) => [
                                 n === "leads"
                                   ? v
                                   : `₹${Number(v).toLocaleString("en-IN")}`,
