@@ -230,13 +230,13 @@
 
 //             </select>
 
-//             <button
+//             {/* <button
 //               onClick={() => setOpenModal(true)}
 //               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
 //             >
 //               <Plus size={15} />
 //               Schedule Post
-//             </button>
+//             </button> */}
 
 //             <label className="cursor-pointer px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg text-sm">
 //               Upload Calendar
@@ -423,164 +423,304 @@
 //   );
 // }
 
+
 "use client";
 
-import {
-  Plus,
-  Plug,
-  Unplug,
-  RefreshCw,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Loader2,
-  AlertTriangle,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-} from "lucide-react";
-import { useState, useCallback } from "react";
+import { Plus, X, Upload, Trash2, FileImage, FileVideo, File } from "lucide-react";
+import { useState, useRef } from "react";
 import SchedulePostModal from "@/components/SchedulePostModal";
 import { useGet } from "@/hooks/useGet";
 import { apiClient } from "@/lib/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
 
-/* ── Types ── */
-interface Client {
-  _id: string;
-  profile?: { companyName: string };
-}
+// ─── Asset Upload Modal ───────────────────────────────────────────────────────
 
-interface CalendarPost {
-  _id?: string;
-  platform: string;
-  caption?: string;
-  topic?: string;
-  asset?: string;
-  scheduleDate: string;
-  publishStatus?: string;
-  lastError?: string;
-}
+function AssetUploadModal({ open, onClose, clients, selectedClient, onSuccess }) {
 
-interface DummyPost {
-  title: string;
-  desc: string;
-  time: string;
-}
+  const [clientId, setClientId] = useState(selectedClient || "");
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const fileInputRef = useRef(null);
 
-interface PlatformStatus {
-  connected: boolean;
-  status: string;
-  userName?: string;
-  pageId?: string;
-  tokenExpires?: string;
-  lastUsed?: string;
-  lastError?: string;
-  connectedAt?: string;
-}
+  if (!open) return null;
 
-interface PublishStats {
-  totalPosts?: number;
-  byStatus?: Record<string, number>;
-  byPlatform?: Record<string, number>;
-  recentFailed?: unknown[];
-}
+  const handleFileChange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    setFile(f);
+    setError("");
 
-interface PlatformConfig {
-  key: string;
-  label: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  color: string;
-  hoverColor: string;
-  lightBg: string;
-  textColor: string;
-}
-
-/* ── Platform Config ── */
-const PLATFORMS: PlatformConfig[] = [
-  {
-    key: "facebook",
-    label: "Facebook",
-    icon: Facebook,
-    color: "bg-blue-600",
-    hoverColor: "hover:bg-blue-700",
-    lightBg: "bg-blue-500/10",
-    textColor: "text-blue-400",
-  },
-  {
-    key: "instagram",
-    label: "Instagram",
-    icon: Instagram,
-    color: "bg-gradient-to-r from-purple-600 to-pink-500",
-    hoverColor: "hover:opacity-90",
-    lightBg: "bg-pink-500/10",
-    textColor: "text-pink-400",
-  },
-  {
-    key: "linkedin",
-    label: "LinkedIn",
-    icon: Linkedin,
-    color: "bg-sky-700",
-    hoverColor: "hover:bg-sky-800",
-    lightBg: "bg-sky-500/10",
-    textColor: "text-sky-400",
-  },
-  {
-    key: "twitter",
-    label: "Twitter / X",
-    icon: Twitter,
-    color: "bg-slate-800",
-    hoverColor: "hover:bg-slate-900",
-    lightBg: "bg-slate-500/10",
-    textColor: "text-slate-300",
-  },
-];
-
-/* ── Publish Status Badge ── */
-function StatusBadge({ status }: { status: string }) {
-  const config: Record<
-    string,
-    {
-      icon: React.ComponentType<{ size?: number; className?: string }>;
-      bg: string;
-      text: string;
-      label: string;
+    // Preview for image only
+    if (f.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result);
+      reader.readAsDataURL(f);
+    } else {
+      setPreview(null);
     }
-  > = {
-    draft: { icon: Clock, bg: "bg-slate-500/20", text: "text-slate-400", label: "Draft" },
-    scheduled: { icon: Clock, bg: "bg-amber-500/20", text: "text-amber-400", label: "Scheduled" },
-    queued: { icon: Loader2, bg: "bg-blue-500/20", text: "text-blue-400", label: "Queued" },
-    publishing: { icon: Loader2, bg: "bg-indigo-500/20", text: "text-indigo-400", label: "Publishing…" },
-    published: { icon: CheckCircle2, bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Published" },
-    failed: { icon: XCircle, bg: "bg-red-500/20", text: "text-red-400", label: "Failed" },
-    cancelled: { icon: XCircle, bg: "bg-slate-500/20", text: "text-slate-400", label: "Cancelled" },
   };
 
-  const c = config[status] || config.draft;
-  const Icon = c.icon;
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (!f) return;
+    setFile(f);
+    setError("");
+    if (f.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result);
+      reader.readAsDataURL(f);
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const getFileIcon = (f) => {
+    if (!f) return <File size={32} className="text-slate-400" />;
+    if (f.type.startsWith("image/")) return <FileImage size={32} className="text-indigo-400" />;
+    if (f.type.startsWith("video/")) return <FileVideo size={32} className="text-purple-400" />;
+    return <File size={32} className="text-slate-400" />;
+  };
+
+  const handleUpload = async () => {
+    if (!clientId) { setError("Client select karo pehle"); return; }
+    if (!file) { setError("File select karo"); return; }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("clientId", clientId);
+
+      await apiClient.post(
+        "http://localhost:5000/api/assets/upload-asset",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      // Reset state
+      setFile(null);
+      setPreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      onSuccess?.();
+      onClose();
+
+    } catch (err) {
+      console.error("Asset upload error:", err);
+      setError(err?.response?.data?.message || "Upload failed, try again");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setFile(null);
+    setPreview(null);
+    setError("");
+    onClose();
+  };
 
   return (
-    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${c.bg} ${c.text}`}>
-      <Icon
-        size={12}
-        className={status === "publishing" || status === "queued" ? "animate-spin" : ""}
-      />
-      {c.label}
-    </span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] shadow-2xl">
+
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-white/10">
+          <div>
+            <h2 className="font-semibold text-base">Upload Asset</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Image, video ya document — client ke saath store hoga</p>
+          </div>
+          <button onClick={handleClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10">
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="p-5 space-y-4">
+
+          {/* Client Select */}
+          <div>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 block">
+              Client *
+            </label>
+            <select
+              value={clientId}
+              onChange={(e) => setClientId(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select Client</option>
+              {clients.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.profile?.companyName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Drop Zone */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            onClick={() => fileInputRef.current?.click()}
+            className="cursor-pointer border-2 border-dashed border-slate-300 dark:border-white/10 rounded-xl p-6 flex flex-col items-center gap-3 hover:border-indigo-400 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/5 transition-colors"
+          >
+            {preview ? (
+              <img
+                src={preview}
+                alt="Preview"
+                className="h-28 object-contain rounded-lg"
+              />
+            ) : (
+              <>
+                {getFileIcon(file)}
+                <div className="text-center">
+                  <p className="text-sm font-medium">
+                    {file ? file.name : "Click ya drag & drop karo"}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {file
+                      ? formatSize(file.size)
+                      : "Images, videos, SVG, PDF · Max 50MB"}
+                  </p>
+                </div>
+              </>
+            )}
+
+            {file && !preview && (
+              <p className="text-xs text-slate-500 font-medium">{file.name} — {formatSize(file.size)}</p>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,video/*,.pdf,.svg,.ai,.psd"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+
+          {/* Error */}
+          {error && (
+            <p className="text-xs text-red-500 bg-red-50 dark:bg-red-500/10 px-3 py-2 rounded-lg">
+              {error}
+            </p>
+          )}
+
+        </div>
+
+        {/* Footer */}
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={handleClose}
+            className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-white/10 text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleUpload}
+            disabled={uploading || !file || !clientId}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm transition"
+          >
+            {uploading ? (
+              <>
+                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload size={14} />
+                Upload Asset
+              </>
+            )}
+          </button>
+        </div>
+
+      </div>
+    </div>
   );
 }
 
-/* ═══════════════════════════════════════════
-   MAIN PAGE COMPONENT
-   ═══════════════════════════════════════════ */
+// ─── Asset Card ───────────────────────────────────────────────────────────────
+
+function AssetCard({ asset, onDelete }) {
+
+  const isImage = asset.mimeType?.startsWith("image/") || asset.resourceType === "image";
+  const isVideo = asset.mimeType?.startsWith("video/") || asset.resourceType === "video";
+
+  const formatSize = (bytes) => {
+    if (!bytes) return "";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const dimensions = asset.width && asset.height
+    ? `${asset.width}×${asset.height}`
+    : null;
+
+  return (
+    <div className="group relative rounded-lg border border-slate-200 dark:border-white/10 p-3 overflow-hidden">
+
+      {/* Thumbnail */}
+      <div className="h-20 rounded overflow-hidden bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+        {isImage ? (
+          <img
+            src={asset.url}
+            alt={asset.name}
+            className="h-full w-full object-cover"
+          />
+        ) : isVideo ? (
+          <video
+            src={asset.url}
+            className="h-full w-full object-cover"
+            muted
+          />
+        ) : (
+          <File size={28} className="text-slate-400" />
+        )}
+      </div>
+
+      {/* Delete Button — hover pe dikhta hai */}
+      <button
+        onClick={() => onDelete(asset._id)}
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition p-1 rounded bg-red-500/90 text-white"
+        title="Delete"
+      >
+        <Trash2 size={12} />
+      </button>
+
+      <p className="text-sm mt-2 font-medium truncate" title={asset.name}>
+        {asset.name}
+      </p>
+      <p className="text-xs text-slate-400">
+        {[dimensions, formatSize(asset.size)].filter(Boolean).join(" · ")}
+      </p>
+
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
 export default function ContentBrandPage() {
+
   const queryClient = useQueryClient();
 
   const [openModal, setOpenModal] = useState(false);
+  const [openAssetModal, setOpenAssetModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState("");
-  const [connectingPlatform, setConnectingPlatform] = useState<string | null>(null);
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
 
   const today = new Date();
   const year = today.getFullYear();
@@ -589,201 +729,83 @@ export default function ContentBrandPage() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const calendarDays: (string | number)[] = [
+  const calendarDays = [
     ...Array(firstDay).fill(""),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  /* ── API Queries ── */
-
   const { data: clientsData } = useGet(
     "clients",
     "http://localhost:5000/api/clients"
-  ) as { data: { clients: Client[] } | undefined };
+  );
+
   const clients = clientsData?.clients || [];
 
-  const { data: socialStatus, isLoading: statusLoading } = useGet(
-    `socialStatus-${selectedClient}`,
-    `http://localhost:5000/api/social-auth/status/${selectedClient}`,
-    { enabled: !!selectedClient }
-  ) as { data: { data: Record<string, PlatformStatus> } | undefined; isLoading: boolean };
-  const connectedPlatforms = socialStatus?.data || {};
-
   const { data: calendarData } = useGet(
-    `calendarPosts-${selectedClient}`,
-    `http://localhost:5000/api/publish/calendar?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
+    ["calendarPosts", selectedClient],
+    `http://localhost:5000/api/content/calendar-posts?month=${month + 1}&year=${year}&clientId=${selectedClient}`,
     { enabled: !!selectedClient }
-  ) as { data: { data: CalendarPost[] } | undefined };
-  const calendarPosts: CalendarPost[] = calendarData?.data || [];
+  );
 
-  const { data: statsData } = useGet(
-    `publishStats-${selectedClient}`,
-    `http://localhost:5000/api/publish/stats/${selectedClient}`,
+  const calendarPosts = calendarData?.data || [];
+
+  // ── Assets fetch ──
+  const { data: assetsData, refetch: refetchAssets } = useGet(
+    ["assets", selectedClient],
+    `http://localhost:5000/api/assets/assets?clientId=${selectedClient}`,
     { enabled: !!selectedClient }
-  ) as { data: { data: PublishStats } | undefined };
-  const publishStats: PublishStats = statsData?.data || {};
-
-  /* ── Handlers ── */
-
-  const handleConnect = useCallback(
-    async (platform: string) => {
-      if (!selectedClient) {
-        alert("Please select a client first");
-        return;
-      }
-
-      setConnectingPlatform(platform);
-
-      try {
-        const res = await apiClient.get(
-          `http://localhost:5000/api/social-auth/connect`,
-          { params: { clientId: selectedClient, platform } }
-        );
-
-        if (res.data?.authUrl) {
-          window.location.href = res.data.authUrl;
-        }
-      } catch (err: unknown) {
-        console.error("Connect error:", err);
-        const axiosErr = err as { response?: { data?: { error?: string } } };
-        alert(axiosErr?.response?.data?.error || "Failed to connect");
-      } finally {
-        setConnectingPlatform(null);
-      }
-    },
-    [selectedClient]
   );
 
-  const handleDisconnect = useCallback(
-    async (platform: string) => {
-      if (!confirm(`Disconnect ${platform}? Scheduled posts won't publish.`))
-        return;
+  const assets = assetsData?.data || [];
 
-      setIsDisconnecting(true);
-      try {
-        await apiClient.delete(
-          "http://localhost:5000/api/social-auth/disconnect",
-          { data: { clientId: selectedClient, platform } }
-        );
-        queryClient.invalidateQueries({ queryKey: [`socialStatus-${selectedClient}`] });
-      } catch (err: unknown) {
-        const axiosErr = err as { response?: { data?: { error?: string } } };
-        alert(axiosErr?.response?.data?.error || "Disconnect failed");
-      } finally {
-        setIsDisconnecting(false);
-      }
-    },
-    [selectedClient, queryClient]
-  );
-
-  const handleRetry = useCallback(
-    async (postId: string) => {
-      try {
-        await apiClient.post(
-          `http://localhost:5000/api/publish/${postId}/retry`
-        );
-        queryClient.invalidateQueries({ queryKey: [`calendarPosts-${selectedClient}`] });
-      } catch (err: unknown) {
-        const axiosErr = err as { response?: { data?: { error?: string } } };
-        alert(axiosErr?.response?.data?.error || "Retry failed");
-      }
-    },
-    [selectedClient, queryClient]
-  );
-
-  const handleCalendarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!selectedClient) {
-      alert("Please select client first");
-      return;
+  // ── Delete asset ──
+  const handleDeleteAsset = async (assetId) => {
+    if (!confirm("Asset delete karna chahte ho?")) return;
+    try {
+      await apiClient.delete(`http://localhost:5000/api/assets/assets/${assetId}`);
+      queryClient.invalidateQueries(["assets", selectedClient]);
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Delete failed");
     }
+  };
 
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const dummyPosts = [
+    { title: "EduTech Pro — Instagram", desc: "Admission open post · Creative #14 · 4 hashtags", time: "Today 6PM" },
+    { title: "RE360 — Facebook + Instagram", desc: "New project launch video · 90s reel · 3 variants", time: "Tomorrow 10AM" },
+    { title: "FinanceHub — LinkedIn", desc: "Thought leadership article · Interest rate blog post", time: "Mar 10 9AM" },
+  ];
 
+  const displayPosts = calendarPosts.length ? calendarPosts : dummyPosts;
+
+  const handleCalendarUpload = async (e) => {
+    if (!selectedClient) { alert("Please select client first"); return; }
+    const file = e.target.files[0];
+    if (!file) { alert("Please select file"); return; }
     const validTypes = [".xlsx", ".csv"];
-    const isValid = validTypes.some((type) =>
-      file.name.toLowerCase().endsWith(type)
-    );
-
-    if (!isValid) {
-      alert("Only Excel (.xlsx) or CSV files allowed");
-      e.target.value = "";
-      return;
-    }
-
+    const isValid = validTypes.some(type => file.name.toLowerCase().endsWith(type));
+    if (!isValid) { alert("Only Excel (.xlsx) or CSV files allowed"); e.target.value = ""; return; }
     try {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("clientId", selectedClient);
-
-      await apiClient.post(
-        "http://localhost:5000/api/content/upload-calendar",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
+      await apiClient.post("http://localhost:5000/api/content/upload-calendar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       alert("Calendar uploaded successfully");
-      queryClient.invalidateQueries({ queryKey: [`calendarPosts-${selectedClient}`] });
+      queryClient.invalidateQueries(["calendarPosts", selectedClient]);
       e.target.value = "";
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Upload error:", error);
-      const axiosErr = error as { response?: { data?: { message?: string } } };
-      alert(axiosErr?.response?.data?.message || "Upload failed");
+      alert(error?.response?.data?.message || "Upload failed");
     }
   };
 
-  /* ── Dummy data (when no client selected) ── */
-
-  const dummyPosts: DummyPost[] = [
-    {
-      title: "EduTech Pro — Instagram",
-      desc: "Admission open post · Creative #14 · 4 hashtags",
-      time: "Today 6PM",
-    },
-    {
-      title: "RE360 — Facebook + Instagram",
-      desc: "New project launch video · 90s reel · 3 variants",
-      time: "Tomorrow 10AM",
-    },
-    {
-      title: "FinanceHub — LinkedIn",
-      desc: "Thought leadership article · Interest rate blog post",
-      time: "Mar 10 9AM",
-    },
-  ];
-
-  const displayPosts: (CalendarPost | DummyPost)[] = calendarPosts.length
-    ? calendarPosts
-    : dummyPosts;
-
-  const assets = [
-    {
-      name: "EduTech_Banner_Q1.jpg",
-      size: "1200×628 · 840 KB",
-      color: "from-indigo-500 to-blue-500",
-      icon: "🎓",
-    },
-    {
-      name: "HealthFirst_Clinic_Ad.mp4",
-      size: "16:9 · 30s · 18 MB",
-      color: "from-green-500 to-teal-500",
-      icon: "🏥",
-    },
-    {
-      name: "RE360_Logo_2026.svg",
-      size: "Vector · Brand doc",
-      color: "from-orange-500 to-red-500",
-      icon: "🏠",
-    },
-  ];
-
-  /* ═══════════════════════════════════════
-     RENDER
-     ═══════════════════════════════════════ */
   return (
     <>
       <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-white dark:bg-[#020817] text-slate-900 dark:text-white space-y-6">
-        {/* ── HEADER ── */}
+
+        {/* HEADER */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-xl md:text-2xl font-bold">Content & Brand</h1>
@@ -791,7 +813,6 @@ export default function ContentBrandPage() {
               Content calendar, asset library and publishing tracker
             </p>
           </div>
-
           <div className="flex gap-2 flex-wrap">
             <select
               value={selectedClient}
@@ -806,194 +827,46 @@ export default function ContentBrandPage() {
               ))}
             </select>
 
-            <button
-              onClick={() => setOpenModal(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
-            >
-              <Plus size={15} />
-              Schedule Post
-            </button>
-
             <label className="cursor-pointer px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg text-sm">
               Upload Calendar
-              <input
-                type="file"
-                accept=".xlsx,.csv"
-                onChange={handleCalendarUpload}
-                className="hidden"
-              />
+              <input type="file" accept=".xlsx,.csv" onChange={handleCalendarUpload} className="hidden" />
             </label>
           </div>
         </div>
 
-        {/* ── SOCIAL MEDIA CONNECTIONS ── */}
-        {selectedClient && (
-          <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold">Social Media Accounts</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Connect platforms to enable auto-publishing
-                </p>
-              </div>
-
-              {statusLoading && (
-                <Loader2 size={16} className="animate-spin text-slate-400" />
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {PLATFORMS.map((p) => {
-                const status = connectedPlatforms[p.key];
-                const isConnected = status?.connected;
-                const Icon = p.icon;
-
-                return (
-                  <div
-                    key={p.key}
-                    className={`relative rounded-lg border p-4 transition-all ${
-                      isConnected
-                        ? "border-emerald-500/30 bg-emerald-500/5"
-                        : "border-slate-200 dark:border-white/10"
-                    }`}
-                  >
-                    {/* Platform header */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                          isConnected ? p.lightBg : "bg-slate-100 dark:bg-white/5"
-                        }`}
-                      >
-                        <Icon
-                          size={18}
-                          className={isConnected ? p.textColor : "text-slate-400"}
-                        />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium">{p.label}</p>
-                        {isConnected && status?.userName && (
-                          <p className="text-xs text-slate-400 truncate">
-                            @{status.userName}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Status + Error */}
-                    {isConnected && status?.lastError && (
-                      <div className="flex items-start gap-1.5 mb-3 p-2 rounded bg-red-500/10 text-red-400 text-xs">
-                        <AlertTriangle size={12} className="mt-0.5 shrink-0" />
-                        <span className="line-clamp-2">{status.lastError}</span>
-                      </div>
-                    )}
-
-                    {/* Connect / Disconnect button */}
-                    {isConnected ? (
-                      <button
-                        onClick={() => handleDisconnect(p.key)}
-                        disabled={isDisconnecting}
-                        className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-500/20 text-red-400 text-xs hover:bg-red-500/10 transition-colors disabled:opacity-50"
-                      >
-                        <Unplug size={13} />
-                        Disconnect
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleConnect(p.key)}
-                        disabled={connectingPlatform === p.key}
-                        className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-white text-xs transition-all disabled:opacity-50 ${p.color} ${p.hoverColor}`}
-                      >
-                        {connectingPlatform === p.key ? (
-                          <Loader2 size={13} className="animate-spin" />
-                        ) : (
-                          <Plug size={13} />
-                        )}
-                        Connect {p.label}
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* ── QUICK STATS (when client selected) ── */}
-        {selectedClient && (publishStats.totalPosts ?? 0) > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { label: "Total Posts", value: publishStats.totalPosts || 0, color: "text-indigo-400" },
-              { label: "Published", value: publishStats.byStatus?.published || 0, color: "text-emerald-400" },
-              { label: "Scheduled", value: publishStats.byStatus?.scheduled || 0, color: "text-amber-400" },
-              { label: "Failed", value: publishStats.byStatus?.failed || 0, color: "text-red-400" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-4"
-              >
-                <p className="text-xs text-slate-400">{stat.label}</p>
-                <p className={`text-2xl font-bold mt-1 ${stat.color}`}>
-                  {stat.value}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── CALENDAR + POSTS ── */}
+        {/* CALENDAR + POSTS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
           {/* CALENDAR */}
           <div className="relative overflow-visible rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
             <h3 className="font-semibold mb-6">
-              Content Calendar —{" "}
-              {today.toLocaleString("default", { month: "long" })} {year}
+              Content Calendar — {today.toLocaleString("default", { month: "long" })} {year}
             </h3>
-
             <div className="grid grid-cols-7 text-center text-xs text-slate-400 mb-2">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
                 <div key={d}>{d}</div>
               ))}
             </div>
-
             <div className="grid grid-cols-7 gap-2 text-sm">
               {calendarDays.map((day, i) => {
                 const dayPosts = calendarPosts.filter(
-                  (post) =>
-                    new Date(post.scheduleDate).getDate() === Number(day)
+                  post => new Date(post.scheduleDate).getDate() === Number(day)
                 );
-
                 return (
-                  <div
-                    key={i}
-                    className="relative group h-12 flex items-center justify-center rounded-md hover:bg-slate-200 dark:hover:bg-slate-800"
-                  >
+                  <div key={i} className="relative group h-12 flex items-center justify-center rounded-md hover:bg-slate-200 dark:hover:bg-slate-800">
                     {day}
-
                     {dayPosts.length > 0 && (
                       <>
                         <div className="absolute bottom-1 flex items-center gap-1 bg-indigo-600/20 text-indigo-400 text-[10px] px-1.5 py-[2px] rounded-full">
                           <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
                           {dayPosts.length}
                         </div>
-
-                        <div className="absolute hidden group-hover:block left-full ml-2 top-1/2 -translate-y-1/2 w-60 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 shadow-lg rounded-lg p-3 z-[9999] pointer-events-none">
+                        <div className="absolute hidden group-hover:block left-full ml-2 top-1/2 -translate-y-1/2 w-56 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 shadow-lg rounded-lg p-3 z-[9999] pointer-events-none">
                           {dayPosts.map((post, index) => (
                             <div key={index} className="mb-2 last:mb-0">
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium text-sm">
-                                  {post.platform}
-                                </p>
-                                <StatusBadge status={post.publishStatus || "scheduled"} />
-                              </div>
-                              <p className="text-xs text-slate-400 mt-0.5">
-                                {post.topic || post.caption?.slice(0, 60)}
-                              </p>
-                              {post.asset && (
-                                <p className="text-xs text-slate-500">
-                                  {post.asset}
-                                </p>
-                              )}
+                              <p className="font-medium text-sm">{post.platform}</p>
+                              <p className="text-xs text-slate-400">{post.topic}</p>
+                              <p className="text-xs text-slate-400">{post.asset}</p>
                             </div>
                           ))}
                         </div>
@@ -1005,111 +878,84 @@ export default function ContentBrandPage() {
             </div>
           </div>
 
-          {/* POSTS LIST */}
+          {/* POSTS */}
           <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
             <h3 className="font-semibold mb-4">Scheduled Posts This Week</h3>
-
             <div className="space-y-3">
-              {displayPosts.map((post, i) => {
-                /* Type guards */
-                const isCalendarPost = "platform" in post;
-                const platform = isCalendarPost ? (post as CalendarPost).platform : (post as DummyPost).title;
-                const caption = isCalendarPost ? (post as CalendarPost).caption : (post as DummyPost).desc;
-                const publishStatus = isCalendarPost ? (post as CalendarPost).publishStatus : undefined;
-                const postId = isCalendarPost ? (post as CalendarPost)._id : undefined;
-                const lastError = isCalendarPost ? (post as CalendarPost).lastError : undefined;
-                const scheduleDate = isCalendarPost ? (post as CalendarPost).scheduleDate : undefined;
-                const time = !isCalendarPost ? (post as DummyPost).time : undefined;
-
-                return (
-                  <div
-                    key={postId || i}
-                    className="flex items-start justify-between gap-3 p-3 border border-slate-200 dark:border-white/10 rounded-lg"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-sm">{platform}</p>
-                        {publishStatus && <StatusBadge status={publishStatus} />}
-                      </div>
-                      <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
-                        {caption}
-                      </p>
-
-                      {/* Retry button for failed posts */}
-                      {publishStatus === "failed" && postId && (
-                        <button
-                          onClick={() => handleRetry(postId)}
-                          className="mt-2 inline-flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors"
-                        >
-                          <RefreshCw size={12} />
-                          Retry now
-                        </button>
-                      )}
-
-                      {/* Show last error on failed */}
-                      {publishStatus === "failed" && lastError && (
-                        <p className="mt-1 text-xs text-red-400/80 line-clamp-1">
-                          {lastError}
-                        </p>
-                      )}
-                    </div>
-
-                    <span className="shrink-0 text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400 whitespace-nowrap">
-                      {scheduleDate
-                        ? new Date(scheduleDate).toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        : time}
-                    </span>
+              {displayPosts.map((post, i) => (
+                <div key={i} className="flex justify-between p-3 border border-slate-200 dark:border-white/10 rounded-lg">
+                  <div>
+                    <p className="font-medium text-sm">{post.platform || post.title}</p>
+                    <p className="text-xs text-slate-400">{post.caption || post.desc}</p>
                   </div>
-                );
-              })}
-
-              {displayPosts.length === 0 && selectedClient && (
-                <p className="text-center text-sm text-slate-400 py-6">
-                  No scheduled posts for this month
-                </p>
-              )}
+                  <span className="text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400">
+                    {post.scheduleDate ? new Date(post.scheduleDate).toLocaleDateString() : post.time}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
+
         </div>
 
-        {/* ── ASSET LIBRARY ── */}
+        {/* ASSET LIBRARY */}
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b1220] p-6">
-          <h3 className="font-semibold mb-6">Asset Library</h3>
+
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-semibold">Asset Library</h3>
+              {selectedClient && assets.length > 0 && (
+                <p className="text-xs text-slate-400 mt-0.5">{assets.length} asset{assets.length > 1 ? "s" : ""}</p>
+              )}
+            </div>
+            {!selectedClient && (
+              <p className="text-xs text-slate-400">Client select karo assets dekhne ke liye</p>
+            )}
+          </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {assets.map((asset, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-slate-200 dark:border-white/10 p-3"
-              >
-                <div
-                  className={`h-20 flex items-center justify-center text-2xl text-white bg-gradient-to-r ${asset.color} rounded`}
-                >
-                  {asset.icon}
-                </div>
-                <p className="text-sm mt-2 font-medium">{asset.name}</p>
-                <p className="text-xs text-slate-400">{asset.size}</p>
-              </div>
+
+            {/* Real assets from DB */}
+            {assets.map((asset) => (
+              <AssetCard
+                key={asset._id}
+                asset={asset}
+                onDelete={handleDeleteAsset}
+              />
             ))}
 
-            <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3 cursor-pointer transition-colors">
+            {/* Upload button */}
+            <div
+              onClick={() => setOpenAssetModal(true)}
+              className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-white/10 rounded-lg text-slate-400 hover:border-indigo-400 hover:text-indigo-400 p-3 cursor-pointer transition-colors min-h-[100px]"
+            >
               <Plus size={18} />
               <p className="text-xs mt-1">Upload Asset</p>
             </div>
+
           </div>
+
         </div>
+
       </div>
 
+      {/* Modals */}
       <SchedulePostModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         clients={clients}
       />
+
+      <AssetUploadModal
+        open={openAssetModal}
+        onClose={() => setOpenAssetModal(false)}
+        clients={clients}
+        selectedClient={selectedClient}
+        onSuccess={() => {
+          queryClient.invalidateQueries(["assets", selectedClient]);
+        }}
+      />
+
     </>
   );
 }
