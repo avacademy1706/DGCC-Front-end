@@ -1574,37 +1574,196 @@ function Step2Goals({ data, set }: StepProps) {
 }
 
 function Step3Channels({ data, set }: StepProps) {
-  const channels = ["Google Ads","Meta Ads","LinkedIn Ads","YouTube","SEO","Email","WhatsApp","Programmatic"];
-  const toggle = (c: string) => {
-    const cur: string[] = data.channels || [];
-    set("channels", cur.includes(c) ? cur.filter((x: string) => x !== c) : [...cur, c]);
+  const channels = [
+    "Google Ads",
+    "Meta Ads",
+    "LinkedIn Ads",
+    "YouTube",
+    "SEO",
+    "Email",
+    "WhatsApp",
+    "Programmatic",
+  ];
+
+  const channelFieldMap: Record<string, Array<{ key: string; label: string; placeholder: string }>> = {
+    "Google Ads": [
+      { key: "customerId", label: "Customer ID", placeholder: "e.g. 123-456-7890" },
+      { key: "managerId", label: "Manager ID", placeholder: "e.g. MCC ID" },
+      { key: "refreshToken", label: "Refresh Token", placeholder: "Enter Google Ads refresh token" },
+      { key: "loginCustomerId", label: "Login Customer ID", placeholder: "Optional login customer ID" },
+    ],
+    "Meta Ads": [
+      { key: "adAccountId", label: "Ad Account ID", placeholder: "e.g. act_123456789" },
+      { key: "pixelId", label: "Pixel ID", placeholder: "e.g. 123456789012345" },
+      { key: "pageId", label: "Facebook Page ID", placeholder: "Enter Page ID" },
+      { key: "accessToken", label: "Access Token", placeholder: "Enter Meta access token" },
+    ],
+    "LinkedIn Ads": [
+      { key: "accountId", label: "Account ID", placeholder: "Enter LinkedIn account ID" },
+      { key: "accessToken", label: "Access Token", placeholder: "Enter LinkedIn access token" },
+    ],
+    "YouTube": [
+      { key: "channelId", label: "Channel ID", placeholder: "Enter YouTube channel ID" },
+      { key: "apiKey", label: "API Key", placeholder: "Enter YouTube API key" },
+    ],
+    "SEO": [
+      { key: "domain", label: "Domain", placeholder: "e.g. example.com" },
+      { key: "searchConsoleProperty", label: "Search Console Property", placeholder: "Enter GSC property" },
+    ],
+    "Email": [
+      { key: "platform", label: "Email Platform", placeholder: "e.g. Mailchimp / HubSpot" },
+      { key: "apiKey", label: "API Key", placeholder: "Enter Email platform API key" },
+    ],
+    "WhatsApp": [
+      { key: "phoneNumberId", label: "Phone Number ID", placeholder: "Enter phone number ID" },
+      { key: "wabaId", label: "WABA ID", placeholder: "Enter WhatsApp Business Account ID" },
+      { key: "accessToken", label: "Access Token", placeholder: "Enter WhatsApp access token" },
+    ],
+    "Programmatic": [
+      { key: "platform", label: "DSP Platform", placeholder: "e.g. DV360 / The Trade Desk" },
+      { key: "seatId", label: "Seat ID", placeholder: "Enter seat/account ID" },
+      { key: "apiKey", label: "API Key", placeholder: "Enter platform API key" },
+    ],
   };
+
+  const selectedChannels: string[] = data.channels || [];
+  const channelConfigs = data.channelConfigs || {};
+
+  const toggle = (channel: string) => {
+    const isSelected = selectedChannels.includes(channel);
+
+    if (isSelected) {
+      const updatedChannels = selectedChannels.filter((c) => c !== channel);
+      const updatedConfigs = { ...channelConfigs };
+      delete updatedConfigs[channel];
+
+      set("channels", updatedChannels);
+      set("channelConfigs", updatedConfigs);
+    } else {
+      const updatedChannels = [...selectedChannels, channel];
+      const defaultConfig =
+        channelFieldMap[channel]?.reduce((acc, field) => {
+          acc[field.key] = "";
+          return acc;
+        }, {} as Record<string, string>) || {};
+
+      set("channels", updatedChannels);
+      set("channelConfigs", {
+        ...channelConfigs,
+        [channel]: defaultConfig,
+      });
+    }
+  };
+
+  const updateChannelField = (channel: string, key: string, value: string) => {
+    set("channelConfigs", {
+      ...channelConfigs,
+      [channel]: {
+        ...(channelConfigs[channel] || {}),
+        [key]: value,
+      },
+    });
+  };
+
   return (
     <div>
       <h2 className="font-semibold text-lg mb-6">Step 3: Channel Setup</h2>
-      <label className="text-sm text-gray-500 dark:text-slate-400 mb-3 block">Select Active Channels</label>
-      <div className="grid grid-cols-4 gap-3">
-        {channels.map(c => (
-          <button key={c} type="button" onClick={() => toggle(c)}
-            className={`px-3 py-2.5 rounded-lg border text-sm font-medium transition-all
-              ${(data.channels||[]).includes(c) ? "bg-indigo-600 border-indigo-600 text-white" : "border-gray-300 dark:border-slate-700 text-gray-600 dark:text-slate-400 hover:border-indigo-400"}`}>
-            {c}
-          </button>
-        ))}
+
+      <label className="text-sm text-gray-500 dark:text-slate-400 mb-3 block">
+        Select Active Channels
+      </label>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {channels.map((c) => {
+          const active = selectedChannels.includes(c);
+
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => toggle(c)}
+              className={`px-3 py-2.5 rounded-lg border text-sm font-medium transition-all
+                ${
+                  active
+                    ? "bg-indigo-600 border-indigo-600 text-white"
+                    : "border-gray-300 dark:border-slate-700 text-gray-600 dark:text-slate-400 hover:border-indigo-400"
+                }`}
+            >
+              {c}
+            </button>
+          );
+        })}
       </div>
-      <div className="grid grid-cols-2 gap-6 mt-6">
+
+      {/* Dynamic channel config forms */}
+      {selectedChannels.length > 0 && (
+        <div className="mt-8 space-y-6">
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
+            Channel Configuration Details
+          </h3>
+
+          {selectedChannels.map((channel) => (
+            <div
+              key={channel}
+              className="rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/40 p-5"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {channel} Configuration
+                </h4>
+                <span className="text-xs px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300">
+                  Active
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(channelFieldMap[channel] || []).map((field) => (
+                  <div key={field.key}>
+                    <label className="text-sm text-gray-500 dark:text-slate-400">
+                      {field.label}
+                    </label>
+                    <input
+                      value={channelConfigs[channel]?.[field.key] || ""}
+                      onChange={(e) =>
+                        updateChannelField(channel, field.key, e.target.value)
+                      }
+                      placeholder={field.placeholder}
+                      className={inp}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div>
           <label className="text-sm text-gray-500 dark:text-slate-400">CRM Platform</label>
-          <select value={data.crm || ""} onChange={e => set("crm", e.target.value)} className={inp}>
+          <select
+            value={data.crm || ""}
+            onChange={(e) => set("crm", e.target.value)}
+            className={inp}
+          >
             <option value="">Select CRM</option>
-            {["HubSpot","Salesforce","Zoho CRM","LeadSquared","None"].map(o => <option key={o}>{o}</option>)}
+            {["HubSpot", "Salesforce", "Zoho CRM", "LeadSquared", "None"].map((o) => (
+              <option key={o}>{o}</option>
+            ))}
           </select>
         </div>
+
         <div>
           <label className="text-sm text-gray-500 dark:text-slate-400">Analytics Tool</label>
-          <select value={data.analytics || ""} onChange={e => set("analytics", e.target.value)} className={inp}>
+          <select
+            value={data.analytics || ""}
+            onChange={(e) => set("analytics", e.target.value)}
+            className={inp}
+          >
             <option value="">Select Tool</option>
-            {["Google Analytics 4","Mixpanel","Amplitude","Clevertap"].map(o => <option key={o}>{o}</option>)}
+            {["Google Analytics 4", "Mixpanel", "Amplitude", "Clevertap"].map((o) => (
+              <option key={o}>{o}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -1643,49 +1802,146 @@ function Step4KPIs({ data, set }: StepProps) {
 }
 
 function Step5Stakeholders({ data, set }: StepProps) {
-  const stakeholders: Array<{ name: string; email: string; role: string }> = data.stakeholders || [{ name: "", email: "", role: "" }];
+  const stakeholders: Array<{ name: string; email: string; role: string; password: string }> =
+    data.stakeholders || [{ name: "", email: "", role: "", password: "" }];
+
+  const [showPw, setShowPw] = useState<Record<number, boolean>>({});
+
   const update = (i: number, field: string, value: string) => {
     const updated = [...stakeholders];
     updated[i] = { ...updated[i], [field]: value };
     set("stakeholders", updated);
   };
+
+  const togglePw = (i: number) =>
+    setShowPw(prev => ({ ...prev, [i]: !prev[i] }));
+
   return (
     <div>
       <h2 className="font-semibold text-lg mb-6">Step 5: Stakeholder Mapping</h2>
       <div className="space-y-4">
         {stakeholders.map((s, i) => (
-          <div key={i} className="grid grid-cols-3 gap-4 items-end">
-            <div>
-              <label className="text-sm text-gray-500 dark:text-slate-400">Name</label>
-              <input value={s.name} onChange={e => update(i, "name", e.target.value)} placeholder="e.g. Rahul Sharma" className={inp} />
-            </div>
-            <div>
-              <label className="text-sm text-gray-500 dark:text-slate-400">Email</label>
-              <input value={s.email} onChange={e => update(i, "email", e.target.value)} placeholder="rahul@company.com" className={inp} />
-            </div>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <label className="text-sm text-gray-500 dark:text-slate-400">Role</label>
-                <select value={s.role} onChange={e => update(i, "role", e.target.value)} className={inp}>
-                  <option value="">Select Role</option>
-                  {["Decision Maker","Marketing Head","Finance Contact","Reporting Viewer"].map(o => <option key={o}>{o}</option>)}
-                </select>
+          <div
+            key={i}
+            className="p-4 rounded-lg border border-gray-200 dark:border-slate-700/60 bg-gray-50/50 dark:bg-slate-900/30 space-y-3"
+          >
+            {/* Row 1 — Name · Email · Role · Remove (exact same layout as before) */}
+            <div className="grid grid-cols-3 gap-4 items-end">
+              <div>
+                <label className="text-sm text-gray-500 dark:text-slate-400">Name</label>
+                <input
+                  value={s.name}
+                  onChange={e => update(i, "name", e.target.value)}
+                  placeholder="e.g. Rahul Sharma"
+                  className={inp}
+                />
               </div>
-              {i > 0 && (
-                <button onClick={() => set("stakeholders", stakeholders.filter((_, idx) => idx !== i))}
-                  className="mt-6 px-3 py-2 rounded-md border border-red-300 dark:border-red-800 text-red-500 text-sm hover:bg-red-50 dark:hover:bg-red-900/20">✕</button>
-              )}
+              <div>
+                <label className="text-sm text-gray-500 dark:text-slate-400">Email</label>
+                <input
+                  type="email"
+                  value={s.email}
+                  onChange={e => update(i, "email", e.target.value)}
+                  placeholder="rahul@company.com"
+                  className={inp}
+                />
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className="text-sm text-gray-500 dark:text-slate-400">Role</label>
+                  <select
+                    value={s.role}
+                    onChange={e => update(i, "role", e.target.value)}
+                    className={inp}
+                  >
+                    <option value="">Select Role</option>
+                    {["Decision Maker", "Marketing Head", "Finance Contact", "Reporting Viewer"].map(o => (
+                      <option key={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+                {i > 0 && (
+                  <button
+                    onClick={() => set("stakeholders", stakeholders.filter((_, idx) => idx !== i))}
+                    className="mt-6 px-3 py-2 rounded-md border border-red-300 dark:border-red-800 text-red-500 text-sm hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Row 2 — Password (naya) */}
+            <div className="grid grid-cols-3 gap-4 items-end">
+              <div className="col-span-2">
+                <label className="text-sm text-gray-500 dark:text-slate-400">
+                  Portal Password{" "}
+                  <span className="text-xs text-gray-400 dark:text-slate-600 font-normal">
+                    (optional — client portal login ke liye)
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPw[i] ? "text" : "password"}
+                    value={s.password}
+                    onChange={e => update(i, "password", e.target.value)}
+                    placeholder="Min. 6 characters"
+                    className={`${inp} pr-9`}
+                  />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => togglePw(i)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
+                  >
+                    {showPw[i] ? (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Status indicator */}
+              <div className="pb-[9px]">
+                {!s.password ? (
+                  <p className="text-xs text-gray-400 dark:text-slate-600">No login access</p>
+                ) : s.password.length < 6 ? (
+                  <p className="text-xs text-amber-500">⚠ Min. 6 characters</p>
+                ) : (
+                  <p className="text-xs text-emerald-500">✓ Login enabled</p>
+                )}
+              </div>
             </div>
           </div>
         ))}
       </div>
-      <button type="button" onClick={() => set("stakeholders", [...stakeholders, { name: "", email: "", role: "" }])}
-        className="mt-4 text-sm text-indigo-500 hover:text-indigo-600">
+
+      <button
+        type="button"
+        onClick={() =>
+          set("stakeholders", [...stakeholders, { name: "", email: "", role: "", password: "" }])
+        }
+        className="mt-4 text-sm text-indigo-500 hover:text-indigo-600"
+      >
         + Add Another Stakeholder
       </button>
+
       <div className="mt-6 p-4 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30">
         <p className="text-sm font-medium text-indigo-700 dark:text-indigo-400">Ready to Submit!</p>
-        <p className="text-xs text-indigo-500 dark:text-indigo-300 mt-1">Review all steps and click the button below to finish.</p>
+        <p className="text-xs text-indigo-500 dark:text-indigo-300 mt-1">
+          {stakeholders.filter(s => s.password && s.password.length >= 6).length > 0
+            ? `${stakeholders.filter(s => s.password && s.password.length >= 6).length} stakeholder(s) ko portal login milega.`
+            : "Review all steps and click the button below to finish."}
+        </p>
       </div>
     </div>
   );
@@ -1746,6 +2002,7 @@ function ClientOnboardingWizard() {
           timeline:       c.goals?.timeline         || "",
           goalNotes:      c.goals?.goalNotes        || "",
           channels:       c.channels?.channels      || [],
+channelConfigs: c.channels?.channelConfigs || {},
           crm:            c.channels?.crm           || "",
           analytics:      c.channels?.analytics     || "",
           cpl:            c.kpis?.cpl               || "",
@@ -1773,10 +2030,19 @@ function ClientOnboardingWizard() {
     switch (s) {
       case 1: return { companyName: formData.companyName || "", industry: formData.industry || "", revenueModel: formData.revenueModel || "B2C", market: formData.market || "", description: formData.description || "", targetAudience: formData.targetAudience || "", budget: formData.budget || "" };
       case 2: return { primaryGoals: formData.primaryGoals || [], growthTarget: formData.growthTarget || "", timeline: formData.timeline || "", goalNotes: formData.goalNotes || "" };
-      case 3: return { channels: formData.channels || [], crm: formData.crm || "", analytics: formData.analytics || "" };
-      case 4: return { cpl: formData.cpl || "", cac: formData.cac || "", roas: formData.roas || "", ltv: formData.ltv || "", conversionRate: formData.conversionRate || "", leadTarget: formData.leadTarget || "", reportingFreq: formData.reportingFreq || "" };
-      case 5: return { stakeholders: formData.stakeholders || [] };
-      default: return {};
+case 3:
+  return {
+    channels: formData.channels || [],
+    channelConfigs: formData.channelConfigs || {},
+    crm: formData.crm || "",
+    analytics: formData.analytics || "",
+  };      case 4: return { cpl: formData.cpl || "", cac: formData.cac || "", roas: formData.roas || "", ltv: formData.ltv || "", conversionRate: formData.conversionRate || "", leadTarget: formData.leadTarget || "", reportingFreq: formData.reportingFreq || "" };
+case 5: return {
+  stakeholders: (formData.stakeholders || []).map((s: any) => ({
+    name: s.name, email: s.email, role: s.role,
+    password: s.password || "",  // ← YEH FIX
+  })),
+};      default: return {};
     }
   };
 
@@ -1784,7 +2050,7 @@ function ClientOnboardingWizard() {
   const getFullPayload = () => ({
     profile:      { companyName: formData.companyName, industry: formData.industry, revenueModel: formData.revenueModel, market: formData.market, description: formData.description, targetAudience: formData.targetAudience, budget: formData.budget },
     goals:        { primaryGoals: formData.primaryGoals, growthTarget: formData.growthTarget, timeline: formData.timeline, goalNotes: formData.goalNotes },
-    channels:     { channels: formData.channels, crm: formData.crm, analytics: formData.analytics },
+    channels:     { channels: formData.channels, channelConfigs: formData.channelConfigs, crm: formData.crm, analytics: formData.analytics },
     kpis:         { cpl: formData.cpl, cac: formData.cac, roas: formData.roas, ltv: formData.ltv, conversionRate: formData.conversionRate, leadTarget: formData.leadTarget, reportingFreq: formData.reportingFreq },
     stakeholders: formData.stakeholders,
   });

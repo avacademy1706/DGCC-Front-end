@@ -102,6 +102,7 @@
 
 import { Search, Bell, Sun, Moon, ChevronDown, X } from "lucide-react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export function TopNavbar() {
@@ -142,7 +143,7 @@ export function TopNavbar() {
       <h1 className="text-sm md:text-base lg:text-lg font-semibold text-gray-800 dark:text-white truncate pl-10 md:pl-0">
         {/* Short title on small screens */}
         <span className="hidden sm:inline">Digital Growth Command Centre</span>
-        <span className="sm:hidden">DGCC</span>
+        
       </h1>
 
       {/* ── Right: Actions ──────────────────────────────────────────────────── */}
@@ -167,10 +168,10 @@ export function TopNavbar() {
         </button>
 
         {/* Notification */}
-        <button className="relative w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]">
+        {/* <button className="relative w-9 h-9 flex items-center justify-center rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827]">
           <Bell size={16} className="text-yellow-500" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-        </button>
+        </button> */}
 
         {/* Theme Toggle */}
         <button
