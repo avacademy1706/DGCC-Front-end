@@ -435,7 +435,14 @@ import { useQueryClient } from "@tanstack/react-query";
 
 // ─── Asset Upload Modal ───────────────────────────────────────────────────────
 
-function AssetUploadModal({ open, onClose, clients, selectedClient, onSuccess }) {
+type AssetUploadModalProps = {
+  open: boolean;
+  onClose: () => void;
+  selectedClient?: string;
+  onSuccess?: () => void;
+};
+
+function AssetUploadModal({ open, onClose, selectedClient, onSuccess } : AssetUploadModalProps) {
   const [clientId, setClientId] = useState(selectedClient || "");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
