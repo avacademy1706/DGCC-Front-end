@@ -444,7 +444,7 @@ type AssetUploadModalProps = {
 
 function AssetUploadModal({ open, onClose, selectedClient, onSuccess } : AssetUploadModalProps) {
   const [clientId, setClientId] = useState(selectedClient || "");
-  const [file, setFile] = useState(null);
+ const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
