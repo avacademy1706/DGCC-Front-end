@@ -460,8 +460,8 @@ function AssetUploadModal({ open, onClose, selectedClient, onSuccess } : AssetUp
 
   if (!open) return null;
 
-  const handleFileChange = (e) => {
-    const f = e.target.files[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
     if (!f) return;
     setFile(f);
     setError("");
