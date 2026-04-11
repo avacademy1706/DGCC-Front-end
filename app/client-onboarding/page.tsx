@@ -1583,6 +1583,7 @@ function Step3Channels({ data, set }: StepProps) {
     "Email",
     "WhatsApp",
     "Programmatic",
+    "Google Analytics",
   ];
 
   const channelFieldMap: Record<string, Array<{ key: string; label: string; placeholder: string }>> = {
@@ -1624,6 +1625,11 @@ function Step3Channels({ data, set }: StepProps) {
       { key: "seatId", label: "Seat ID", placeholder: "Enter seat/account ID" },
       { key: "apiKey", label: "API Key", placeholder: "Enter platform API key" },
     ],
+    "Google Analytics": [
+  { key: "propertyId", label: "GA4 Property ID", placeholder: "e.g. 123456789" },
+  { key: "measurementId", label: "Measurement ID", placeholder: "e.g. G-XXXXXXX" },
+  { key: "websiteUrl", label: "Website URL", placeholder: "e.g. https://example.com" },
+],
   };
 
   const selectedChannels: string[] = data.channels || [];

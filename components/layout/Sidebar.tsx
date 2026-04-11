@@ -219,7 +219,7 @@ const menu = [
     items: [
       { name: "Strategy", icon: Target, href: "/strategy" },
       { name: "Campaigns", icon: Megaphone, href: "/campaigns", badge: "12" },
-      { name: "Content", icon: FileText, href: "/content" },
+      { name: "calender", icon: FileText, href: "/calender" },
       { name: "Leads", icon: Mail, href: "/leads", badge: "24" },
       { name : "Google Analytics" , href: "/google-analytics" , icon : ChartNoAxesCombined},
 
@@ -386,18 +386,18 @@ function SidebarContent({
         {collapsed ? (
           <div
             className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold shrink-0 cursor-pointer"
-            title="Alex Kumar — Agency Admin"
+            title=" — Agency Admin"
           >
-            AK
+            PD
           </div>
         ) : (
           <div className="flex items-center gap-3 px-1">
             <div className="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-              AK
+              PD
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                Alex Kumar
+                Plexus Digitals
               </p>
               <p className="text-xs text-gray-500 dark:text-slate-500 truncate">
                 Agency Admin

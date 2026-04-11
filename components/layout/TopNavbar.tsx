@@ -188,12 +188,11 @@ export function TopNavbar() {
         {/* Profile — icon only on mobile, full on md+ */}
         <div className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827] cursor-pointer">
           <div className="w-7 h-7 flex items-center justify-center rounded-md bg-indigo-500 text-white text-xs font-semibold shrink-0">
-            AK
+            PD
           </div>
           <span className="hidden md:inline text-sm text-gray-800 dark:text-gray-200 whitespace-nowrap">
-            Alex Kumar
+            Plexus Digitals
           </span>
-          <ChevronDown size={14} className="hidden md:block text-gray-500" />
         </div>
 
       </div>
