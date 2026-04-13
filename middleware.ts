@@ -25,10 +25,10 @@ export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
 
   // 1. Agar login nahi hai aur private route hit kiya
-//   if (!accessToken && !isPublicRoute) {
-//     const loginUrl = new URL("/login", request.url);
-//     return NextResponse.redirect(loginUrl);
-//   }
+  if (!accessToken && !isPublicRoute) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
   // 2. Agar login hai aur user /login par ja raha hai
   if (accessToken && isPublicRoute) {
