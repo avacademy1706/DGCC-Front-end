@@ -880,6 +880,62 @@ function SectionHeader({
   );
 }
 
+type Client = {
+  _id: string;
+  status?: string;
+  currentStep?: number;
+  profile?: {
+    companyName?: string;
+    industry?: string;
+    revenueModel?: string;
+    market?: string;
+    description?: string;
+    targetAudience?: string;
+    budget?: string;
+    _id?: string;
+  };
+  goals?: {
+    primaryGoals?: string[];
+    growthTarget?: string;
+    timeline?: string;
+    goalNotes?: string;
+    _id?: string;
+  };
+  channels?: {
+    channels?: string[];
+    crm?: string;
+    analytics?: string;
+    channelConfigs?: Record<string, unknown>;
+    _id?: string;
+  };
+  kpis?: {
+    cpl?: string;
+    cac?: string;
+    roas?: string;
+    ltv?: string;
+    conversionRate?: string;
+    leadTarget?: string;
+    reportingFreq?: string;
+    _id?: string;
+  };
+  stakeholders?: Array<{
+    name?: string;
+    email?: string;
+    role?: string;
+    canLogin?: boolean;
+    _id?: string;
+    lastLogin?: string;
+  }>;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+type GetClientByIdResponse = {
+  success: boolean;
+  message: string;
+  client: Client;
+};
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -898,7 +954,7 @@ export default function ClientDetailsPage() {
     data,
     isLoading,
     isError,
-  } = useGet(["client-details", id], `/clients/${id}`, {
+  } = useGet<GetClientByIdResponse>(["client-details", id], `/clients/${id}`, {
     enabled: !!id,
     staleTime: 0,
     refetchOnMount: true,
@@ -948,10 +1004,15 @@ export default function ClientDetailsPage() {
     createdAt,
   } = client;
 
-  const cfg = statusConfig[status] || statusConfig.draft;
+  const safeStatus = status ?? "draft";
+const cfg = statusConfig[safeStatus] || statusConfig.draft;
   const StatusIcon = cfg.icon;
-  const progress =
-    status === "completed" ? 100 : Math.max(((currentStep - 1) / 5) * 100, 0);
+  const safeCurrentStep = currentStep ?? 1;
+
+const progress =
+  status === "completed"
+    ? 100
+    : Math.max(((safeCurrentStep - 1) / 5) * 100, 0);
   const letter = profile?.companyName?.charAt(0)?.toUpperCase() || "?";
   const createdDate = createdAt
     ? new Date(createdAt).toLocaleDateString("en-IN", {
@@ -1025,7 +1086,7 @@ export default function ClientDetailsPage() {
           <span className="text-xs text-gray-500 dark:text-slate-400">
             {status === "completed"
               ? "All 5 steps complete ✓"
-              : `Step ${currentStep} / 5`}
+              : `Step ${safeCurrentStep} / 5`}
           </span>
         </div>
 
@@ -1040,8 +1101,8 @@ export default function ClientDetailsPage() {
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           {STEP_LABELS.map((label, i) => {
-            const done = i + 1 < currentStep || status === "completed";
-            const active = i + 1 === currentStep && status !== "completed";
+            const done = i + 1 <  safeCurrentStep || status === "completed";
+            const active = i + 1 === safeCurrentStep && status !== "completed";
 
             return (
               <div key={i} className="flex items-center min-w-max flex-1">
@@ -1176,9 +1237,9 @@ export default function ClientDetailsPage() {
           <Card>
             <SectionHeader icon={Target} title="Marketing Goals" />
 
-            {goals?.primaryGoals?.length > 0 && (
+            {(goals?.primaryGoals?.length ?? 0) > 0 && (
               <div className="flex flex-wrap gap-2 mb-5">
-                {goals.primaryGoals.map((g: string) => (
+                {(goals?.primaryGoals ?? []).map((g: string) => (
                   <span
                     key={g}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-medium"
@@ -1278,9 +1339,9 @@ export default function ClientDetailsPage() {
           <Card>
             <SectionHeader icon={Share2} title="Marketing Channels" />
 
-            {channels?.channels?.length > 0 ? (
+            {(channels?.channels?.length ?? 0) > 0 ? (
               <div className="space-y-2">
-                {channels.channels.map((ch: string) => (
+                {(channels?.channels ?? []).map((ch: string) => (
                   <div
                     key={ch}
                     className={`flex items-center justify-between px-3 py-2.5 rounded-lg border text-xs font-medium
@@ -1322,12 +1383,12 @@ export default function ClientDetailsPage() {
           </Card>
 
           {/* STAKEHOLDERS */}
-          {stakeholders?.length > 0 && (
+          {(stakeholders?.length ?? 0) > 0 && (
             <Card>
               <SectionHeader icon={Users} title="Stakeholders" />
 
               <div className="space-y-3">
-                {stakeholders.map((s: any, i: number) => (
+                {(stakeholders ?? []).map((s: any, i: number) => (
                   <div
                     key={i}
                     className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-slate-900/60"
@@ -1366,7 +1427,7 @@ export default function ClientDetailsPage() {
                   value:
                     status === "completed"
                       ? "Completed ✓"
-                      : `Step ${currentStep}/5`,
+                      : `Step ${safeCurrentStep}/5`,
                 },
                 {
                   label: "Channels",

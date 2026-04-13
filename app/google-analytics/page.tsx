@@ -350,17 +350,20 @@ const realtimeUrl = useMemo(
   [selectedClientId]
 );
 
-  const {
-    data: overview,
-    isLoading: overviewLoading,
-    isError: overviewError,
-    error: overviewErrObj,
-    refetch: refetchOverview,
-  } = useGet<OverviewResponse>(
-    ["analytics-overview", selectedClientId, dateRange],
-    overviewUrl,
-    { enabled: !!selectedClientId && !!overviewUrl , keepPreviousData: true}
-  );
+const {
+  data: overview,
+  isLoading: overviewLoading,
+  isError: overviewError,
+  error: overviewErrObj,
+  refetch: refetchOverview,
+} = useGet<OverviewResponse>(
+  ["analytics-overview", selectedClientId, dateRange],
+  overviewUrl,
+  {
+    enabled: !!selectedClientId && !!overviewUrl,
+    placeholderData: (previousData) => previousData,
+  }
+);
 
   const {
     data: pagesData,

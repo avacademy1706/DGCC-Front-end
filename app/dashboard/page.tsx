@@ -874,22 +874,22 @@ export default function Dashboard() {
     ];
   }, [totals]);
 
-  const todayOperationsData = useMemo(() => {
-    return [
-      {
-        label: "Leads",
-        value: todaySummary.leadsToday || 0,
-        display: formatNumber(todaySummary.leadsToday),
-        color: "#3b82f6",
-      },
-      {
-        label: "Ad Spend",
-        value: todaySummary.adSpendToday || 0,
-        display: todaySummary.adSpendToday,
-        color: "#6366f1",
-      },
-    ];
-  }, [todaySummary]);
+const todayOperationsData = useMemo(() => {
+  return [
+    {
+      label: "Leads",
+      value: todaySummary.leadsToday || 0,
+      display: formatNumber(todaySummary.leadsToday),
+      color: "#3b82f6",
+    },
+    {
+      label: "Ad Spend",
+      value: todaySummary.adSpendToday || 0,
+      display: formatCurrency(todaySummary.adSpendToday),
+      color: "#6366f1",
+    },
+  ];
+}, [todaySummary]);
 
   const portfolioClients = useMemo(() => {
     return clients.map((client) => {

@@ -16,15 +16,60 @@
 
   // ---------------- Types ----------------
 
-  type ClientType = {
-    _id: string;
-    profile?: {
-      companyName?: string;
-    };
-    name?: string;
-    companyName?: string;
-  };
 
+
+type ClientType = {
+  _id: string;
+  status: string;
+  currentStep: number;
+  profile: {
+    companyName: string;
+    industry: string;
+    revenueModel: string;
+    market: string;
+    description: string;
+    targetAudience: string;
+    budget: string;
+    _id: string;
+  };
+  goals: {
+    primaryGoals: string[];
+    growthTarget: string;
+    timeline: string;
+    goalNotes: string;
+    _id: string;
+  };
+  channels: {
+    channels: string[];
+    crm: string;
+    analytics: string;
+    channelConfigs?: Record<string, any>;
+    _id: string;
+  };
+  kpis: {
+    cpl: string;
+    cac: string;
+    roas: string;
+    ltv: string;
+    conversionRate: string;
+    leadTarget: string;
+    reportingFreq: string;
+    _id: string;
+  };
+  createdAt: string;
+};
+
+type ClientsResponse = {
+  success: boolean;
+  message: string;
+  clients: ClientType[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+};
   type ReportType =
     | "weekly_performance"
     | "monthly_report"
@@ -218,7 +263,7 @@ function getFormatLabel(format: string) {
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { data: clientsData, isLoading: loadingClients } = useGet(
+  const { data: clientsData, isLoading: loadingClients } = useGet<ClientsResponse>(
     "clients",
     "http://localhost:5000/api/clients"
   );
@@ -276,9 +321,8 @@ function getFormatLabel(format: string) {
       if (!form.clientId) return;
 
       const currentClient = clients.find((c) => c._id === form.clientId);
-      const clientName =
-        currentClient?.companyName || currentClient?.name || "Client";
-      const reportLabel = getReportTypeLabel(form.reportType);
+const clientName = currentClient?.profile?.companyName || "Client";
+const reportLabel = getReportTypeLabel(form.reportType);
 
       if (form.startDate && form.endDate) {
         const start = formatDate(form.startDate);
@@ -544,24 +588,24 @@ function getFormatLabel(format: string) {
                   Client
                 </label>
           <select
-    name="clientId"
-    value={form.clientId}
-    onChange={handleChange}
-    disabled={loadingClients}
-    className="w-full mt-1 p-2 text-xs md:text-sm rounded-md border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white disabled:opacity-60"
-  >
-    {clients.length === 0 ? (
-      <option value="">
-        {loadingClients ? "Loading clients..." : "No clients found"}
+  name="clientId"
+  value={form.clientId}
+  onChange={handleChange}
+  disabled={loadingClients}
+  className="w-full mt-1 p-2 text-xs md:text-sm rounded-md border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white disabled:opacity-60"
+>
+  {clients.length === 0 ? (
+    <option value="">
+      {loadingClients ? "Loading clients..." : "No clients found"}
+    </option>
+  ) : (
+    clients.map((client) => (
+      <option key={client._id} value={client._id}>
+        {client.profile?.companyName || "Unnamed Client"}
       </option>
-    ) : (
-      clients.map((client) => (
-        <option key={client._id} value={client._id}>
-          {client.profile?.companyName || client.companyName || client.name || "Unnamed Client"}
-        </option>
-      ))
-    )}
-  </select>
+    ))
+  )}
+</select>
               </div>
 
               <div>

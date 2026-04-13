@@ -1047,3 +1047,9 @@
 //     </>
 //   );
 // }
+
+"use client";
+
+export default function ContentBrandPage() {
+  return <div>Calendar Page</div>;
+}

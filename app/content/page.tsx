@@ -1359,8 +1359,87 @@ import {
   Building2,
   ChevronDown,
 } from "lucide-react";
+type Platform = "instagram" | "facebook" | "linkedin" | "twitter";
 
-type Platform = "instagram" | "twitter" | "linkedin" | "facebook";
+type ClientProfile = {
+  _id: string;
+  companyName: string;
+  industry: string;
+  revenueModel: string;
+  market: string;
+  description: string;
+  targetAudience: string;
+  budget: string;
+};
+
+type ClientGoals = {
+  _id: string;
+  primaryGoals: string[];
+  growthTarget: string;
+  timeline: string;
+  goalNotes: string;
+};
+
+type ChannelConfigMetaAds = {
+  accessToken?: string;
+  adAccountId?: string;
+  pageId?: string;
+};
+
+type ChannelConfigGoogleAnalytics = {
+  propertyId?: string;
+  measurementId?: string;
+  websiteUrl?: string;
+};
+
+type ClientChannels = {
+  _id: string;
+  channels: string[];
+  crm: string;
+  analytics: string;
+  channelConfigs?: {
+    "Meta Ads"?: ChannelConfigMetaAds;
+    "Google Analytics"?: ChannelConfigGoogleAnalytics;
+    [key: string]: any;
+  };
+};
+
+type ClientKpis = {
+  _id: string;
+  cpl: string;
+  cac: string;
+  roas: string;
+  ltv: string;
+  conversionRate: string;
+  leadTarget: string;
+  reportingFreq: string;
+};
+
+type ClientItem = {
+  _id: string;
+  status: string;
+  currentStep: number;
+  profile: ClientProfile;
+  goals: ClientGoals;
+  channels: ClientChannels;
+  kpis: ClientKpis;
+  createdAt: string;
+};
+
+type ClientsPagination = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+type ClientsResponse = {
+  success: boolean;
+  message: string;
+  clients: ClientItem[];
+  pagination: ClientsPagination;
+};
+
 type Status =
   | "pending"
   | "approved"
@@ -1368,74 +1447,87 @@ type Status =
   | "revision_accepted"
   | "resubmitted";
 
-interface ClientItem {
-  _id: string;
-  profile?: {
-    companyName?: string;
-    industry?: string;
-    market?: string;
-  };
-  status?: string;
-  createdAt?: string;
-}
+type ResourceType = "image" | "video" | "raw" | "auto";
 
-interface RevisionHistoryItem {
-  _id?: string;
-  action:
-    | "revision_requested"
-    | "revision_edited"
-    | "revision_cancelled"
-    | "revision_accepted"
-    | "resubmitted"
-    | "approved";
-  note?: string;
-  actedBy: "client" | "admin" | "system";
-  actorName?: string;
-  previousStatus: Status;
-  newStatus: Status;
-  requestGroupId?: string;
-  isLocked?: boolean;
-  isCancelled?: boolean;
-  snapshot?: {
-    postTitle?: string;
-    caption?: string;
-    hashtags?: string[];
-    scheduledAt?: string;
-    platform?: Platform;
-    url?: string;
-    mimeType?: string;
-    resourceType?: string;
-  };
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface ContentPost {
+type ReviewFeedItem = {
   _id: string;
   clientId: string;
   name: string;
   url: string;
   publicId: string;
-  mimeType?: string;
-  resourceType?: string;
-  size?: number;
-  width?: number;
-  height?: number;
+  mimeType: string;
+  resourceType: string;
+  size: number;
+  width: number | null;
+  height: number | null;
   postTitle: string;
-  platform: Platform;
+  platform: string;
   caption: string;
   hashtags: string[];
   scheduledAt: string;
+  status: string;
+  revisionNote: string;
+  reviewedAt: string | null;
+  revisionCount: number;
+  createdBy: string;
+  currentRequestGroupId: string;
+  revisionHistory: any[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+type ContentPost = Omit<
+  ReviewFeedItem,
+  "platform" | "status" | "resourceType"
+> & {
+  platform: Platform;
   status: Status;
-  revisionNote?: string;
-  reviewedAt?: string | null;
-  createdBy?: string;
+  resourceType: ResourceType;
+};
+
+type ReviewFeedResponse = {
+  success: boolean;
+  data: ReviewFeedItem[];
+};
+
+type RevisionAction =
+  | "revision_requested"
+  | "revision_edited"
+  | "revision_cancelled"
+  | "revision_accepted"
+  | "resubmitted"
+  | "approved";
+
+type RevisionActor = "client" | "admin" | "system";
+
+
+
+
+type RevisionHistoryItem = {
+  _id?: string;
+  action: RevisionAction;
+  note: string;
+  actedBy: RevisionActor;
+  actorName: string;
+  previousStatus: Status;
+  newStatus: Status;
+  requestGroupId: string;
+  isLocked: boolean;
+  isCancelled: boolean;
+  snapshot: {
+    postTitle: string;
+    caption: string;
+    hashtags: string[];
+    scheduledAt: string | null;
+    platform: Platform;
+    url: string;
+    mimeType: string;
+    resourceType: ResourceType;
+  };
   createdAt?: string;
   updatedAt?: string;
-  revisionCount?: number;
-  currentRequestGroupId?: string;
-  revisionHistory?: RevisionHistoryItem[];
-}
+};
 
 const PLATFORM_META: Record<
   Platform,
@@ -1536,6 +1628,38 @@ function toLocalInputValue(iso?: string) {
   return local.toISOString().slice(0, 16);
 }
 
+const isValidPlatform = (value: string): value is Platform =>
+  ["instagram", "facebook", "linkedin", "twitter"].includes(value);
+
+const isValidStatus = (value: string): value is Status =>
+  [
+    "pending",
+    "approved",
+    "revision",
+    "revision_accepted",
+    "resubmitted",
+  ].includes(value);
+
+const isValidResourceType = (value: string): value is ResourceType =>
+  ["image", "video", "raw", "auto"].includes(value);
+
+const toContentPost = (post: ReviewFeedItem): ContentPost | null => {
+  if (
+    !isValidPlatform(post.platform) ||
+    !isValidStatus(post.status) ||
+    !isValidResourceType(post.resourceType)
+  ) {
+    return null;
+  }
+
+  return {
+    ...post,
+    platform: post.platform,
+    status: post.status,
+    resourceType: post.resourceType,
+  };
+};
+
 function formatHistoryAction(action: RevisionHistoryItem["action"]) {
   switch (action) {
     case "revision_requested":
@@ -1611,9 +1735,9 @@ export default function AdminContentManagementPage() {
 
   const {
     data: clientsData,
-    loading: clientsLoading,
+    isLoading: clientsLoading,
     error: clientsError,
-  } = useGet(["clients"], "/clients");
+  } = useGet<ClientsResponse>(["clients"], "/clients");
 
   const clients: ClientItem[] = clientsData?.clients || [];
 
@@ -1628,11 +1752,29 @@ export default function AdminContentManagementPage() {
     [clients, selectedClientId]
   );
 
-  const { data, error, refetch, loading } = useGet(
+  const { data, error, refetch, isLoading } = useGet<ReviewFeedResponse>(
     ["review-feed", selectedClientId],
     selectedClientId ? `/assets/review-feed?clientId=${selectedClientId}` : "",
     { enabled: !!selectedClientId }
   );
+
+  useEffect(() => {
+  const rawPosts = Array.isArray(data?.data) ? data.data : [];
+
+  const validPosts: ContentPost[] = rawPosts
+    .map(toContentPost)
+    .filter((post): post is ContentPost => post !== null);
+
+  setPosts(validPosts);
+
+  if (validPosts.length > 0) {
+    setActivePostId((prev) =>
+      prev && validPosts.some((post) => post._id === prev)
+        ? prev
+        : validPosts[0]._id
+    );
+  }
+}, [data]);
 
   useEffect(() => {
     const validPosts = (data?.data || []).filter(isValidPost);
@@ -1952,7 +2094,7 @@ export default function AdminContentManagementPage() {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] text-sm text-gray-500 dark:text-slate-400">
         Loading content posts...
