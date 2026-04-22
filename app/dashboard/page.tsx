@@ -1067,7 +1067,7 @@ const todayOperationsData = useMemo(() => {
               key={index}
               className={`p-3 md:p-4 rounded-md text-xs md:text-sm ${
                 alert.type === "warning"
-                  ? "border border-yellow-600/30 bg-yellow-600/10 text-yellow-400"
+                  ? "border border-yellow-600/30 bg-yellow-600/10 text-[#FF6F00]"
                   : "border border-red-600/30 bg-red-600/10 text-red-400"
               }`}
             >
@@ -1314,7 +1314,7 @@ const todayOperationsData = useMemo(() => {
       </div>
 
       {/* AI RECOMMENDATIONS */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
+      {/* <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1220] p-4 md:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-4 md:mb-6">
           <div>
             <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
@@ -1350,7 +1350,7 @@ const todayOperationsData = useMemo(() => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

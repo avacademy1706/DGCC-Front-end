@@ -228,7 +228,7 @@ const handleLogout = async () => {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-100 dark:bg-[#111827] cursor-pointer hover:bg-gray-200 dark:hover:bg-[#1f2937] transition"
       >
-        <div className="w-7 h-7 flex items-center justify-center rounded-md bg-indigo-500 text-white text-xs font-semibold shrink-0">
+        <div className="w-7 h-7 flex items-center justify-center rounded-md bg-[#FF6F00] text-white text-xs font-semibold shrink-0">
           PD
         </div>
 

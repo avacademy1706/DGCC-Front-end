@@ -2880,32 +2880,7 @@ export default function CampaignManagement() {
               ))}
             </select>
 
-            {/* Sync */}
-            <button
-              onClick={() => refetchCampaigns()}
-              disabled={isFetching}
-              className="p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-[#0b1220] hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
-            >
-              <RefreshCw
-                size={12}
-                className={
-                  isFetching ? "animate-spin text-indigo-400" : "text-gray-500"
-                }
-              />
-              <span className="hidden sm:inline text-xs text-gray-600 dark:text-slate-300">
-                Sync
-              </span>
-            </button>
-
-            {/* New campaign */}
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors font-semibold"
-            >
-              <Plus size={12} />
-              <span className="hidden sm:inline">New Campaign</span>
-              <span className="sm:hidden">New</span>
-            </button>
+            
           </div>
         </div>
 
@@ -2920,7 +2895,7 @@ export default function CampaignManagement() {
               onClick={() => setActivePlatform(p.key)}
               className={`flex items-center gap-1 px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-semibold whitespace-nowrap border-b-2 transition-colors shrink-0 ${
                 activePlatform === p.key
-                  ? "border-b-indigo-500 text-indigo-600 dark:text-indigo-400"
+                  ? "border-b-orange-500 text-orange-600 dark:text-indigo-400"
                   : "border-b-transparent text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200"
               }`}
             >
@@ -3286,7 +3261,7 @@ export default function CampaignManagement() {
                                 </td>
                                 <td className="px-3 py-3">
                                   {c.isAssigned ? (
-                                    <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold max-w-[100px] truncate">
+                                    <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-500/10 text-[#FF6F00] border border-indigo-500/20 font-semibold max-w-[100px] truncate">
                                       <Building2 size={8} />
                                       {c.clientName}
                                     </span>

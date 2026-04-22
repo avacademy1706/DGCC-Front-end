@@ -412,7 +412,7 @@ export default function ClientPortfolio() {
         </div>
 
         <Link href="/client-onboarding">
-          <button className="w-full sm:w-auto px-4 md:px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm hover:bg-indigo-700 transition-colors text-center">
+          <button className="w-full sm:w-auto px-4 md:px-5 py-2 rounded-lg bg-[#FF6F00] text-white text-sm hover:bg-[#E65100] transition-colors text-center">
             + Onboard New Client
           </button>
         </Link>
@@ -566,7 +566,7 @@ export default function ClientPortfolio() {
                     onClick={() =>
                       router.push(`/client-onboarding?edit=${client._id}`)
                     }
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#FF6F00] hover:bg-[#E65100] text-white text-xs transition-colors"
                   >
                     <Pencil size={13} />
                     Edit

@@ -2128,7 +2128,7 @@ export default function AdminContentManagementPage() {
               <button
                 onClick={() => setUploadOpen(true)}
                 disabled={!selectedClientId}
-                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-3 py-2 text-xs font-medium text-white hover:bg-orange-700 disabled:opacity-50"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Upload
@@ -2885,7 +2885,7 @@ export default function AdminContentManagementPage() {
                 <button
                   onClick={handleUpload}
                   disabled={uploading || !selectedClientId}
-                  className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
                 >
                   <Upload className="w-4 h-4" />
                   {uploading ? "Uploading..." : "Upload Content"}

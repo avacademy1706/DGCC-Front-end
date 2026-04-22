@@ -2146,7 +2146,7 @@ case 5: return {
                 View Client →
               </button>
             )}
-            <button onClick={() => router.push("/client-portfolio")}
+            <button onClick={() => router.push("/clients")}
               className="px-6 py-2.5 bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-white rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors">
               All Clients
             </button>
