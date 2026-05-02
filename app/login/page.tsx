@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { usePost } from "@/hooks/usePost";
+import Image from "next/image";
 
 interface Particle {
   id: number;
@@ -254,13 +255,15 @@ function AnimatedLeftPanel() {
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.98),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,111,0,0.04),transparent_30%)]" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-11 py-9 text-center">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="flex items-center justify-center rounded-[14px] px-5 py-3">
-            <img
-              src="/dgcc.png"
-              alt="Plexus Logo"
-              className="h-[52px] w-auto object-contain"
-            />
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex items-center justify-center rounded-[14px] px-5 ">
+           <Image
+  src="/dgcc-logo-day.jpeg"
+  alt="Plexus Logo"
+  width={200}
+  height={100}
+  className="h-[80px] w-auto object-contain"
+/>
           </div>
         </div>
 
@@ -300,9 +303,21 @@ function AnimatedLeftPanel() {
           className="max-w-[320px] text-[14px] leading-[1.7]"
           style={{ color: "#64748B" }}
         >
-          Login to check your Social Media Platform&apos;s Campaigns , Leads , Google analytics Leads , check reports of your campaigns & can see your Social Media Posting&apos;s Calender  .
+          Login to check all your client&apos;s Social Media Platform&apos;s Campaigns , Leads , Google analytics Leads , check reports of your campaigns & can see your Social Media Posting&apos;s Calender  .
         </p>
       </div>
+      <div className="absolute bottom-6 left-0 z-20 flex w-full items-center justify-center gap-2">
+  <span className="text-sm font-medium text-slate-500">Powered by</span>
+
+  <Image
+    src="/plexus-logo-day.png"
+    alt="Plexus"
+    width={120}
+    height={45}
+    className="h-[48px] w-auto object-contain"
+    priority
+  />
+</div>
     </div>
   );
 }
@@ -466,6 +481,16 @@ export default function AdminLoginPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate>
+                <div className="mb-6 flex justify-center md:hidden">
+    <Image
+      src="/dgcc-logo-day.jpeg"
+      alt="DGCC Logo"
+      width={220}
+      height={100}
+      priority
+      className="h-[80px] w-auto object-contain"
+    />
+  </div>
                 <div
                   className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-[5px]"
                   style={{
@@ -694,6 +719,16 @@ export default function AdminLoginPage() {
             )}
           </div>
         </div>
+        <div className="fixed bottom-12 left-0 w-full flex items-center justify-center gap-2 md:hidden">
+  <span className="text-xs text-gray-500">Powered by</span>
+  <Image
+    src="/plexus-logo-day.png"
+    alt="Plexus"
+    width={90}
+    height={30}
+    className="h-[42px] w-auto object-contain"
+  />
+</div>
       </div>
     </>
   );

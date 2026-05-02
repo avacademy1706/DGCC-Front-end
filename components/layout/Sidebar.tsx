@@ -23,6 +23,7 @@ import {
   ChevronRight,
   ShieldCheck,
   ChartNoAxesCombined,
+  MegaphoneIcon,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -41,14 +42,18 @@ const menu = [
       { name: "Campaigns", icon: Megaphone, href: "/campaigns", badge: "12" },
       { name: "calender", icon: FileText, href: "/calender" },
       { name: "Leads", icon: Mail, href: "/leads", badge: "24" },
-      { name : "Google Analytics" , href: "/google-analytics" , icon : ChartNoAxesCombined},
-      { name : "Content" , href: "/content" , icon : FileText},
-
+      {
+        name: "Google Analytics",
+        href: "/google-analytics",
+        icon: ChartNoAxesCombined,
+      },
+      { name: "Content", href: "/content", icon: FileText },
     ],
   },
   {
     label: "Automation",
     items: [
+      { name: "Social Media Postings", icon: MegaphoneIcon, href: "/social-media-postings" },
       { name: "Automation", icon: Bot, href: "/automation" },
       { name: "Analytics", icon: BarChart3, href: "/analytics" },
       { name: "Reports", icon: FileBarChart, href: "/reports" },
@@ -90,9 +95,9 @@ function NavItem({
         ${collapsed ? "justify-center px-2" : "justify-between"}
         ${
           isActive
-             ? "bg-orange-50 text-[#FF6F00] dark:bg-[#FF6F00]/10 dark:text-[#FF6F00]"
-    : "text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white"
-}
+            ? "bg-orange-50 text-[#FF6F00] dark:bg-[#FF6F00]/10 dark:text-[#FF6F00]"
+            : "text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white"
+        }
       `}
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -100,9 +105,9 @@ function NavItem({
           size={18}
           className={`shrink-0 transition-colors ${
             isActive
-    ? "text-[#FF6F00]"
-    : "text-gray-400 dark:text-slate-500 group-hover:text-[#FF6F00]"
-}`}
+              ? "text-[#FF6F00]"
+              : "text-gray-400 dark:text-slate-500 group-hover:text-[#FF6F00]"
+          }`}
         />
         {!collapsed && <span className="truncate">{item.name}</span>}
       </div>
@@ -144,21 +149,31 @@ function SidebarContent({
         ${collapsed ? "justify-center p-4 h-16" : "gap-3 px-4 h-16"}`}
       >
         <div
-          className={`flex items-center border-b border-gray-200 dark:border-slate-800
-    ${collapsed ? "justify-center p-4 h-16" : "gap-3 px-4 h-16"}`}
-        >
-          <div
-            className={`relative shrink-0 ${collapsed ? "w-10 h-10" : "w-36 h-12"}`}
-          >
-            <Image
-              src="/logo.jpeg"
-              alt="DGCC Logo"
-              width={100}
-              height={60}
-              className="object-contain"
-            />
-          </div>
-        </div>
+  className={`flex items-center border-b border-gray-200 dark:border-slate-800
+  ${collapsed ? "justify-center p-4 h-16" : "gap-3 px-4 h-16"}`}
+>
+  <div
+    className={`relative shrink-0 ${collapsed ? "w-10 h-10" : "w-36 h-12"}`}
+  >
+    {/* Light Mode Logo */}
+    <Image
+      src="/dgcc-logo-day.jpeg"
+      alt="DGCC Logo"
+      width={50}
+      height={24}
+      className="object-contain dark:hidden"
+    />
+
+    {/* Dark Mode Logo */}
+    <Image
+      src="/dgcc-logo-night.png"
+      alt="DGCC Logo"
+      width={120}
+      height={60}
+      className="object-contain hidden dark:block"
+    />
+  </div>
+</div>
 
         {/* Mobile close button */}
         {onClose && (

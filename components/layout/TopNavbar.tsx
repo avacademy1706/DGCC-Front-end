@@ -185,14 +185,14 @@ const handleLogout = async () => {
       <div className="flex items-center gap-2 md:gap-3 shrink-0">
 
         {/* Desktop Search */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-50 dark:bg-[#111827] w-[180px] lg:w-[260px]">
+        {/* <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 dark:border-[#1e2d45] bg-gray-50 dark:bg-[#111827] w-[180px] lg:w-[260px]">
           <Search size={16} className="text-gray-400 shrink-0" />
           <input
             type="text"
             placeholder="Search..."
             className="bg-transparent outline-none text-sm w-full text-gray-700 dark:text-gray-200 placeholder:text-gray-400"
           />
-        </div>
+        </div> */}
 
         {/* Mobile Search Icon */}
         <button

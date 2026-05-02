@@ -1451,7 +1451,6 @@
 
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
 import { toast } from "sonner";
 import {
   Building2, Target, Share2, BarChart3, Users,
@@ -1459,8 +1458,8 @@ import {
 } from "lucide-react";
 import { usePost } from "@/hooks/usePost";
 import { usePut } from "@/hooks/usePut";
+import { useGet } from "@/hooks/useGet";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 const steps     = ["Profile", "Goals", "Channels", "KPIs", "Stakeholders"];
 const stepIcons = [Building2, Target, Share2, BarChart3, Users];
@@ -1966,7 +1965,6 @@ function ClientOnboardingWizard() {
   const [completed, setCompleted] = useState(false);
   const [formData, setFormData]   = useState<Record<string, any>>({});
   const [isSaving, setIsSaving]   = useState(false);
-  const [fetchingEdit, setFetchingEdit] = useState(isEditMode);
 
   const clientIdRef = useRef<string | null>(isEditMode ? editId : null);
   const [clientId, setClientId]   = useState<string | null>(isEditMode ? editId : null);
@@ -1988,48 +1986,63 @@ function ClientOnboardingWizard() {
   // ─── Field setter ──────────────────────────────────────────────────────────
   const set = (key: string, value: any) => setFormData(prev => ({ ...prev, [key]: value }));
 
+  const {
+  data: editData,
+  isLoading: isEditLoading,
+  isError: isEditError,
+} = useGet<{ client: any }>(
+  ["client", editId],
+  `/clients/${editId}`,
+  {
+    enabled: !!editId,
+  }
+);
+
   // ─── Edit mode: existing data prefill ─────────────────────────────────────
   useEffect(() => {
-    if (!editId) return;
-    const prefill = async () => {
-      try {
-        const { data } = await axios.get(`${API}/clients/${editId}`);
-        const c = data.client;
-        setFormData({
-          companyName:    c.profile?.companyName    || "",
-          industry:       c.profile?.industry       || "",
-          revenueModel:   c.profile?.revenueModel   || "B2C",
-          market:         c.profile?.market         || "",
-          description:    c.profile?.description    || "",
-          targetAudience: c.profile?.targetAudience || "",
-          budget:         c.profile?.budget         || "",
-          primaryGoals:   c.goals?.primaryGoals     || [],
-          growthTarget:   c.goals?.growthTarget     || "",
-          timeline:       c.goals?.timeline         || "",
-          goalNotes:      c.goals?.goalNotes        || "",
-          channels:       c.channels?.channels      || [],
-channelConfigs: c.channels?.channelConfigs || {},
-          crm:            c.channels?.crm           || "",
-          analytics:      c.channels?.analytics     || "",
-          cpl:            c.kpis?.cpl               || "",
-          cac:            c.kpis?.cac               || "",
-          roas:           c.kpis?.roas              || "",
-          ltv:            c.kpis?.ltv               || "",
-          conversionRate: c.kpis?.conversionRate    || "",
-          leadTarget:     c.kpis?.leadTarget        || "",
-          reportingFreq:  c.kpis?.reportingFreq     || "",
-          stakeholders:   c.stakeholders?.length
-            ? c.stakeholders.map((s: { name?: string; email?: string; role?: string }) => ({ name: s.name || "", email: s.email || "", role: s.role || "" }))
-            : [{ name: "", email: "", role: "" }],
-        });
-      } catch {
-        toast.error("Client data load nahi hua");
-      } finally {
-        setFetchingEdit(false);
-      }
-    };
-    prefill();
-  }, [editId]);
+  if (!editData?.client) return;
+
+  const c = editData.client;
+
+  setFormData({
+    companyName: c.profile?.companyName || "",
+    industry: c.profile?.industry || "",
+    revenueModel: c.profile?.revenueModel || "B2C",
+    market: c.profile?.market || "",
+    description: c.profile?.description || "",
+    targetAudience: c.profile?.targetAudience || "",
+    budget: c.profile?.budget || "",
+
+    primaryGoals: c.goals?.primaryGoals || [],
+    growthTarget: c.goals?.growthTarget || "",
+    timeline: c.goals?.timeline || "",
+    goalNotes: c.goals?.goalNotes || "",
+
+    channels: c.channels?.channels || [],
+    channelConfigs: c.channels?.channelConfigs || {},
+    crm: c.channels?.crm || "",
+    analytics: c.channels?.analytics || "",
+
+    cpl: c.kpis?.cpl || "",
+    cac: c.kpis?.cac || "",
+    roas: c.kpis?.roas || "",
+    ltv: c.kpis?.ltv || "",
+    conversionRate: c.kpis?.conversionRate || "",
+    leadTarget: c.kpis?.leadTarget || "",
+    reportingFreq: c.kpis?.reportingFreq || "",
+
+    stakeholders: c.stakeholders?.length
+      ? c.stakeholders.map(
+          (s: { name?: string; email?: string; role?: string }) => ({
+            name: s.name || "",
+            email: s.email || "",
+            role: s.role || "",
+            password: "",
+          })
+        )
+      : [{ name: "", email: "", role: "", password: "" }],
+  });
+}, [editData]);
 
   // ─── Step payload ──────────────────────────────────────────────────────────
   const getStepPayload = (s: number) => {
@@ -2104,16 +2117,26 @@ case 5: return {
   };
 
   // ─── Loading (edit prefill) ────────────────────────────────────────────────
-  if (fetchingEdit) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#020817] flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 size={36} className="animate-spin text-indigo-500 mx-auto mb-4" />
-          <p className="text-gray-500 dark:text-slate-400 text-sm">Client data load ho raha hai...</p>
-        </div>
+if (isEditMode && isEditLoading) {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-[#020817] flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 size={36} className="animate-spin text-indigo-500 mx-auto mb-4" />
+        <p className="text-gray-500 dark:text-slate-400 text-sm">
+          Client data is loading...
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+if (isEditMode && isEditError) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-red-500 text-sm">Client data is not Loaded</p>
+    </div>
+  );
+}
 
   // ─── Success Screen ────────────────────────────────────────────────────────
   if (completed) {

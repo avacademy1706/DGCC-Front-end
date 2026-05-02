@@ -23,15 +23,19 @@ export function middleware(request: NextRequest) {
 
   // Cookie name wahi rakho jo backend set kar raha hai
   const accessToken = request.cookies.get("access_token")?.value;
+   const refreshToken = request.cookies.get("refresh_token")?.value;
+
+   const isLoggedIn = Boolean(accessToken || refreshToken);
+
 
   // 1. Agar login nahi hai aur private route hit kiya
-  if (!accessToken && !isPublicRoute) {
+  if (!isLoggedIn && !isPublicRoute) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
   // 2. Agar login hai aur user /login par ja raha hai
-  if (accessToken && isPublicRoute) {
+  if (isLoggedIn && isPublicRoute) {
     const dashboardUrl = new URL("/", request.url); // ya "/dashboard"
     return NextResponse.redirect(dashboardUrl);
   }
