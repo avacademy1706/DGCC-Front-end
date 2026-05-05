@@ -22,8 +22,8 @@ export function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.includes(pathname);
 
   // Cookie name wahi rakho jo backend set kar raha hai
-  const accessToken = request.cookies.get("access_token")?.value;
-   const refreshToken = request.cookies.get("refresh_token")?.value;
+  const accessToken = request.cookies.get("admin_access_token")?.value;
+   const refreshToken = request.cookies.get("admin_refresh_token")?.value;
 
    const isLoggedIn = Boolean(accessToken || refreshToken);
 

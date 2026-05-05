@@ -453,23 +453,23 @@ const [editOpen, setEditOpen] = useState(false);
     });
   }, [clients, searchClient]);
 
-  const filteredPosts = useMemo(() => {
-    let list = [...posts];
+const filteredPosts = useMemo<ContentPost[]>(() => {
+  let list = [...posts];
 
-    if (searchContent.trim()) {
-      const q = searchContent.toLowerCase();
+  if (searchContent.trim()) {
+    const q = searchContent.toLowerCase();
 
-      list = list.filter(
-        (p) =>
-          p.postTitle.toLowerCase().includes(q) ||
-          p.caption.toLowerCase().includes(q) ||
-          p.platform.toLowerCase().includes(q) ||
-          p.createdBy?.toLowerCase().includes(q),
-      );
-    }
+    list = list.filter(
+      (p) =>
+        p.postTitle.toLowerCase().includes(q) ||
+        p.caption.toLowerCase().includes(q) ||
+        p.platform.toLowerCase().includes(q) ||
+        p.createdBy?.toLowerCase().includes(q),
+    );
+  }
 
-    return list;
-  }, [posts, searchContent]);
+  return list;
+}, [posts, searchContent]);
 
  const currentPost = useMemo<ContentPost | null>(
   () => posts.find((p) => p._id === activePostId) || null,
@@ -939,21 +939,36 @@ const [editOpen, setEditOpen] = useState(false);
                   Select a client first
                 </div>
               ) : filteredPosts.length ? (
-                filteredPosts.map((post) => {
-                  const meta = PLATFORM_META[post.platform];
-                  const active = post._id === currentPost?._id;
+                // filteredPosts.map((post : ContentPost) => {
+                //   const meta = PLATFORM_META[post.platform];
+                //   const active = currentPost?._id === post._id;
 
-                  return (
-                    <button
-                      key={post._id}
-                      onClick={() => setActivePostId(post._id)}
-                      className={cn(
-                        "w-full rounded-2xl border p-3 text-left transition-all",
-                        active
-                          ? "border-orange-200 bg-orange-50 dark:border-orange-500/30 dark:bg-orange-500/10"
-                          : "border-transparent hover:bg-gray-50 dark:hover:bg-slate-800/60",
-                      )}
-                    >
+                //   return (
+                //     <button
+                //       key={post._id}
+                //       onClick={() => setActivePostId(post._id)}
+                //       className={cn(
+                //         "w-full rounded-2xl border p-3 text-left transition-all",
+                //         active
+                //           ? "border-orange-200 bg-orange-50 dark:border-orange-500/30 dark:bg-orange-500/10"
+                //           : "border-transparent hover:bg-gray-50 dark:hover:bg-slate-800/60",
+                //       )}
+                //     >
+                filteredPosts.map((post: ContentPost) => {
+  const meta = PLATFORM_META[post.platform];
+  const active = activePostId === post._id;
+
+  return (
+    <button
+      key={post._id}
+      onClick={() => setActivePostId(post._id)}
+      className={cn(
+        "w-full rounded-2xl border p-3 text-left transition-all",
+        active
+          ? "border-orange-200 bg-orange-50 dark:border-orange-500/30 dark:bg-orange-500/10"
+          : "border-transparent hover:bg-gray-50 dark:hover:bg-slate-800/60",
+      )}
+    >
                       <div className="mb-2 flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <span>{meta.icon}</span>
